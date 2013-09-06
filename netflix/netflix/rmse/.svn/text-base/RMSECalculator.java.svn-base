@@ -1,0 +1,417 @@
+package netflix.rmse;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+
+import netflix.db.Database;
+
+
+/***********************************************************************************************************************/
+public class RMSECalculator 
+/***********************************************************************************************************************/
+{
+	
+    Database 	database;
+    int 		numValues;
+    double 		sumSquaredValues;
+    double 		sumValues;
+    String 		ratingTableName;
+
+    //Coverage
+    int totalItemsAnswered;
+    int totalItemsUnAnswered;
+    int totalItems;
+    
+    
+    // ROC-4
+     //binary classifier (from actual ratings of each user)
+      boolean actualCategory ;
+ 	  boolean predictedCategory ;
+ 	  
+       //possible outcome of the predicted value
+       double TP;	//true  positive, if (actual== positive && prediction == positive} (Hit)
+       double TN;  //true  negative, if (actual== negative && prediction == positive}
+       double FN;  //false positive, if (actual== negative && prediction == negative}
+       double FP;  //false negative, if (actual== negative && prediction == positive} (Miss)
+      
+       //binary class 
+       double P;		//ACTUAL
+       double N;
+       double P1;		//PREDICTED
+       double N1;
+       
+       //true positive rate
+       double TPR;
+       
+       //false postive rate
+       double FPR;
+       
+     //positive predicted value
+       double PPV;
+       
+       //negative predicted value
+       double NPV;
+       
+       //false Discovery rate
+       double FDR;
+       
+     //Metthew correlation coff
+       double MCC;
+     
+       //Accuracy
+       double ACC;
+     
+     //Specificity
+       double SPC;
+     
+       
+       
+       
+    public RMSECalculator() 
+    
+    {
+        this.database 			= null;
+        this.numValues 			= 0;
+        this.sumSquaredValues 	= 0.0;
+        this.sumValues 			= 0.0;
+        this.ratingTableName 	= "ratings";
+        
+        totalItemsAnswered = totalItemsUnAnswered =	totalItems = 0;       
+        
+        boolean actualCategory    = false;
+   	    boolean predictedCategory = false;
+       
+        TP = TN = FN = FP = P = N = P1 = N1 =0.0;
+        TPR = FPR = PPV = NPV = FDR = MCC = ACC = SPC = 0.0;
+          
+        
+    }
+    
+ /***********************************************************************************************************************/
+    
+   public RMSECalculator(Database database) 
+   
+   {
+        this();
+        this.database = database;
+    }
+   
+/***********************************************************************************************************************/
+
+   public RMSECalculator(Database database, String ratingTableName)    
+   {
+        this(database);
+        this.ratingTableName = ratingTableName;
+    }
+
+ /***********************************************************************************************************************/
+   //This method is called, for obejcts in memory
+   
+    public void add(double realRating, double prediction)		//it is being called from recommender class 
+    
+    {
+        double delta = realRating - prediction;
+        sumValues+= Math.abs(delta);							//MAE
+        sumSquaredValues += delta * delta;						//RMSE
+        numValues++;
+        
+        //get ready roc-4 results
+      //  ROC4(realRating, prediction);
+    }
+
+    
+/***********************************************************************************************************************/
+/*    public void add(int uid, int mid, double prediction) throws SQLException     
+    {
+        double realRating = getRealRating(uid, mid);
+        add(realRating, prediction);
+    }*/
+
+/***********************************************************************************************************************/
+   //Then in last, we call this method to get the error (each object of thsi class has its own function and data) 
+    
+    public double rmse() 
+    
+    {
+        return Math.sqrt(sumSquaredValues / numValues);
+    }
+
+/***********************************************************************************************************************/
+
+    // Normalized RMSE, with lowest and higehst rating index (i.e, 1-5, or 1-10)
+    // As given in EigenTaste paper
+    
+    public double nmae_Eigen(double min, double max)
+    {
+    	return (mae()/(max-min));
+    }
+    
+/***********************************************************************************************************************/
+
+    // Normalized RMSE, with lowest and higehst rating index (i.e, 1-5, or 1-10)
+    // As given in the ClusterKNN paper
+    public double nmae_ClusterKNN(double min, double max)
+    {
+    	double d = 0;
+    	
+    	for (int i= (int)min;i<max;i++)
+    		for (int j=(int)min;j<max;j++)
+    		{
+    			d+= Math.abs(i-j);
+    		}
+    		
+    	   d/= (min*max);
+    	   
+    	return (mae()/d);
+    }
+    
+ /***********************************************************************************************************************/
+    
+  public double mae()     
+    {
+        return (sumValues / numValues);
+    }
+    
+
+/***********************************************************************************************************************/
+  
+  public double mse()     
+    {
+        return (sumSquaredValues / numValues);
+    }
+ 
+/***********************************************************************************************************************/
+
+  public void ROC4(double actual, double predicted, int classes)
+  {
+	 
+	  
+	  //------------------
+	  // FT, Bookcrossing
+	  //------------------
+
+	  
+	  if(classes ==10)
+	  {
+		
+		  if (actual>=7) actualCategory = true;   //{7,8,9,10     = true;}		  
+		  else actualCategory = false;			  //{1,2,3,4,5,6  = flase;}	
+		  
+		  if (predicted>=7) predictedCategory = true;		  
+		  else predictedCategory = false;
+	  }
+	  
+	  //------------------
+	  // ML
+	  //------------------
+	  
+	  else 
+	  {
+		  
+		  if (actual>=4) actualCategory = true;   //{4,5   = true;}		  
+		  else actualCategory = false;			  //{1,2,3 = flase;}	
+		  
+		  if (predicted>=4) predictedCategory = true;		  
+		  else predictedCategory = false;
+	  }
+	  
+	  // we will check only positive case, by default they should be false
+	  // Four possible cases
+	  if(actualCategory==true  		&& predictedCategory==true)		 {TP++; P++;}
+	  else if(actualCategory==true  && predictedCategory==false) 	 {FN++; P++;}
+	  
+	  else if(actualCategory==false && predictedCategory==true)  {FP++; N++;}
+	  else if(actualCategory==false && predictedCategory==false) {TN++; N++;}
+	  
+	   //TPR = TP/ P = TP / (TP + FN)
+	  	TPR = TP/ (P);
+	  
+	  //FPR = FP / N = FP / (FP + TN)
+	  	FPR = FP / (N);
+  	
+	  // ACC = (TP + TN) / (P + N)	
+	  	ACC = (TP + TN) / (P + N);
+
+	  // SPC = TN / N = TN / (FP + TN) = 1- FPR	
+	  	SPC = TN / N;
+
+	  //PPV = TP / (TP + FP);
+	  	PPV = TP / (TP + FP);
+	   
+	  //NPV = TN / (TN + FN)
+	  	NPV = TN / (TN + FN);
+	  	
+	  //FDR = FP / (FP +TP)
+	  	FDR = FP / (FP +TP);
+	  	
+	  //MCC
+	  	MCC = (TP * TN) - (FP * FN) / Math.sqrt((P) *(N)* (P1) * (N1));
+	  	
+	  	
+  }
+  
+ /***********************************************************************************************************************/
+ 
+  //get ROC related values
+  
+  //TPR (Sensitivity, recall, Hitrate)
+  public double getSensitivity ()   // needed for graph  
+  {
+	  
+	  return TPR;
+  }
+  
+//FPR (fall out)
+  public double getFalsePositiveRate () // needed for graph  
+  {
+	  
+	  return FPR;
+  }
+  
+  //TPR determines a classifier or a diagnostic test performance on classifying positive instances 
+  //correctly among all positive samples available during the test. 
+  //FPR, on the other hand, defines how many incorrect positive results occur among all negative
+  //samples available during the test.
+  
+  /*A ROC space is defined by FPR and TPR as x and y axes respectively, which depicts relative    
+   trade-offs between true positive (benefits) and false positive (costs). Since TPR is 
+   equivalent with sensitivity and FPR is equal to 1 - specificity, the ROC graph is sometimes 
+   called the sensitivity vs (1 - specificity) plot. Each prediction result or one instance of a 
+   confusion matrix represents one point in the ROC space */
+  
+
+//ACC
+  public double getAccuracy ()  
+  {
+	  
+	  return ACC;
+  }
+  
+
+//SPC (true negative rate) --> TNR = (1- FNR) --> FNR = 1- TNR = 1- speicificty
+  public double getSpecificity ()  
+  {
+	  
+	  return SPC;
+  }
+  
+
+//PPV (Precision)
+  public double getPositivePredictedvalue ()  
+  {
+	  
+	  return PPV;
+  }
+
+
+//NPV
+  public double getNegativePredictedValue ()  
+  {
+	  
+	  return NPV;
+  }
+
+//FDR
+  public double getFalseDiscoveryrRate ()  
+  {
+	  
+	  return PPV;
+  }
+
+
+//MCC 
+  public double getMetthewsCorrCoff ()
+  {
+	  
+	  return MCC;
+  }
+
+
+  
+  
+  
+ /***********************************************************************************************************************/
+
+  public void resetValues()  
+  {
+	  numValues 			= 0;
+      sumSquaredValues 		= 0.0;
+      sumValues 			= 0.0;
+      totalItemsAnswered	= totalItemsUnAnswered =totalItems =0;
+     	  
+  }
+
+  /***********************************************************************************************************************/
+
+  //reset after we process one user?
+  public void resetROC()
+  {
+	      actualCategory    = false;
+	 	  predictedCategory = false;
+	 	  
+		  TP = TN = FN = FP = P = N = P1 = N1 =0.0;
+		  TPR = FPR = PPV = NPV = FDR = MCC = ACC = SPC = 0.0;
+   
+  }
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+  /**
+   * add the coverage, increase the count of items this algorithm was able to answer
+   */
+  
+  public void addCoverage(double r)
+  {
+	   if (r!=0)
+		   totalItemsAnswered++;
+	   else 
+		   totalItemsUnAnswered++;		//Algo was unable to answer this item
+	   
+	   totalItems++;	  
+  }
+  
+
+/***********************************************************************************************************************/
+  
+  /**
+   * add the coverage, increase the count of items this algorithm was able to answer
+   */
+  
+  public double getItemCoverage()
+  {
+	   if (totalItemsAnswered!=0)
+		   return ( ((totalItemsAnswered *1.0)/ totalItems) *100);  // answered/totalItems
+	   
+	   return 0;
+  }
+    
+  
+/***********************************************************************************************************************/  
+/***********************************************************************************************************************/
+/*  
+    private double getRealRating(int uid, int mid) throws SQLException     
+    {
+        String query = "SELECT rating FROM " + ratingTableName + 
+        				" WHERE uid = " + uid + " AND mid = " + mid;
+        ResultSet result = null;
+        
+        if(database != null) 
+        
+        {
+            result = database.queryDB(query);
+            if (result.next())
+                return (double) result.getInt(1);
+        }
+        
+        else
+        
+        {
+            System.err.println("Database not set. Please initialize RMSECalculator with a Database object.");
+        }
+        return 0.0;
+    }*/
+}
+
+
+

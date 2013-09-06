@@ -1,0 +1,860 @@
+
+
+
+
+
+
+<!doctype html>
+<html>
+<head>
+<script src="//cdn.optimizely.com/js/204774041.js"></script>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<script> var ts1 = new Date().getTime(); </script>
+<!-- static const char articletmpl_sccsId[] = "%W%  %G% %U%  Retrieved: %H% %T%"; -->
+<meta name="robots" content="NOARCHIVE">
+<meta name="robots" content="noodp" />
+<meta name="robots" content="noydir" />
+<link rel="canonical" href="http://www.sciencedirect.com/science/article/pii/S0950705112002079">
+
+
+<link rel="shortcut icon" href="http://cdn.els-cdn.com/sd/faviconSD.ico" type="image/x-icon">
+<title>
+ScienceDirect.com - 
+
+    
+        
+    
+    Knowledge-Based Systems
+ - A new similarity function for selecting neighbors for each target item in collaborative filtering</title>
+
+<link type="text/css" rel="StyleSheet" href="http://www.sciencedirect.com/gadgetservices/gadgets/v3_1/css/gadgets_ext,gadgets,toolbar,SDArticleGadgetOverRide,jquery-ui-1.8.4.custom.css">
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/themes/base/jquery-ui.css" type="text/css">
+<link rel="stylesheet" Title="Default Styles" href="http://cdn.els-cdn.com/sd/css/article_131R4.css" type="text/css">
+<link rel="stylesheet" Title="Default Styles" href="http://cdn.els-cdn.com/sd/css/articleSprite_131R4.css" type="text/css">
+
+<script>
+if( typeof(ts1) == "undefined" ){ ts1= new Date().getTime(); }
+Array.prototype.rt = function(label,ts){this.push( "{lbl:"+label+",ts:"+(ts||ts==0?ts:new Date().getTime())+"}" );}
+var prs = [];
+prs.rt( "head", ts1 );
+function loadPDF(){}
+</script>
+
+
+<!--[if lte IE 7]>
+<script src="http://cdn.els-cdn.com/sd/js/json2_131R4.js.min"></script>
+<![endif]-->
+</head>
+
+<body>
+
+<div class="ua_btn" role="region" aria-label="screen reader compatability"><a role="button" rel="nofollow" href="http://www.sciencedirect.com/science/article/pii/S0950705112002079?np=y">Screen reader users, click here to load entire article</a>This page uses JavaScript to progressively load the article content as a user scrolls.  Screen reader users, click the load entire article button to bypass dynamically loaded article content.</div>
+
+
+<script>prs.rt('body_start');</script>
+<script>
+var refLinkURL = "http://www.sciencedirect.com/science/relLink/ajaxReq?_eid=1-s2.0-S0950705112002079";
+var updatedCitedBy = "http://www.sciencedirect.com/science/referenceResolution/ajaxRefResol?_updateCitedBy=";
+var refResolvePath = "http://www.sciencedirect.com/science/referenceResolution/ajaxRefResol?_eid=1-s2.0-S0950705112002079&_refCnt=49&_docType=article";
+
+// these variables handle the reference resolution. Please ignore the naming.
+// the first variable myMap will hold an associative array of links by bibID
+// the second variable myXabsCounts holds the scopus counts.
+var myMap = []; // html of links for references.
+var myXabsCounts = []; // scopus counts
+</script>
+<div id="header-area">
+  <div id="header" class="outerWrapper">
+<div style="background-color:#FFFFFF;position:relative;" class="outerWrapper" >
+<div id="masthead" >
+
+<!-- INSERTS THE TEMPLATE VARIABLES POPULATED FROM DB for SCIVERSE and PRODUCT labels -->
+
+<div class="logoSciVerseBlk"> <a href="http://www.sciencedirect.com/" <span class="logoSciVerseImg">&nbsp;</span></a> </div> <div class="logoScienceDirectBlk"><a href="http://www.sciencedirect.com/" title="ScienceDirect -The world's leading full-text scientific database"><span class="logoScienceDirectImg" >&nbsp;</span></a></div>
+
+</div >
+<div id="suites" class="clearfix" aria-label="SciVerse" role="navigation" >
+<ul class="suites"><li><a href="http://www.hub.sciverse.com/action/home" title="Hub - SciVerse's integrated search">Hub</a></li><li><a title="ScienceDirect - the world's leading full-text scientific database" class="selected">ScienceDirect</a></li><li><a href="http://www.scopus.com" title="Scopus - the largest abstract and citation database of research literature and quality web sources">Scopus</a></li><li><a href="http://www.applications.sciverse.com/action/userhome" title=" Applications - SciVerse Applications" class="last">Applications</a></li></ul>
+</div>
+</div>		
+
+     <!-- if not logged in -->
+	   
+
+			
+
+    <div id="login" class="clearfix">
+    	<ul>
+		<li>
+    
+      <a href="https://www.sciencedirect.com/science?_ob=RegistrationURL&_method=display&_type=ip&_returnURL=http%3A%2F%2Fwww.sciencedirect.com%2Fscience%2Flogin&_acct=C000060492&_version=1&_userid=3415476&md5=3333589bd8860ad50176e8e207d48b16" target="_top" title="Register a ScienceDirect username and password for using alerts and other personal features" >Register</a>
+    
+  </li>
+  <!--top right widget-->
+  <li class="login " id="loginPlus"><a href="javascript:LoginBox.flipLogin('loginBox',null);" title="Login to ScienceDirect" class="novisit plus nojs" id="loginPlusScript" >Login</a><noscript><a href="http://www.sciencedirect.com/science?_ob=HomePageURL&_method=userHomePage&_fl=y&_acct=C000060492&_version=1&_urlVersion=0&_userid=3415476&md5=00b04c79144c417dcd13a198b858d3fe" title="Open the Login Box" class="plus" id="loginPlusNoScript" >Login</a></noscript>
+  </li>
+           
+           <li class="last"><a href="http://www.scival.com" title="Go to SciVal Suite" >Go to SciVal Suite</a></li> 
+        </ul>
+    </div>
+    
+	<div id="loginBox" style="width:600px;display:none;">
+		
+        <div style="width:285px;float:right;border-left:1px solid #9B9B9B;padding-left:10px;min-height:180px;">
+        
+        <div class="sampletext">
+        <div style="font-weight:bold;padding-bottom:5px;">Login via your institution</div>
+		
+		
+		<div><a href="/science?_ob=FederationURL&_method=display&_type=f&prevURL=http%3A%2F%2Fwww.sciencedirect.com%2Fscience%2Farticle%2Fpii%2FS0950705112002079&_acct=C000060492&_version=1&_userid=3415476&md5=e188bf8c453142d32d08bdf9e2254e81"title="Go to Athens/ Institution login">Athens / Institution login</a></div>
+		
+        </div>
+	
+				
+		
+                  
+                
+            
+            
+        </div>
+		
+        <div class="padding" style="width:285px;">
+            <form name="sdLogin" method="POST" action="https://www.sciencedirect.com/science/login" id="login-box-form" style="margin:0;">
+            <b><span style="text-align:right;font-weight:bold;">Login using your SciVerse credentials</b></span>
+			<input type="hidden" name="login" value="login">
+            <div style="margin-top:20px;">
+            <label for="username"><span style="text-align:right;">Username:</span>
+            <input id="username" type="text" name="userid" title="Please enter your username here" /></label>
+            </div>
+            
+            <div style="margin-top:7px;">
+            <label for="password"><span style="text-align:right;">Password:</span>
+            <input id="password" type="password" name="password" maxlength="20" title="Please enter your password here" onkeypress="if(13==event.keyCode)this.form.submit();if (13==event.keyCode)return false;"/></label>
+            </div>
+                   
+                       
+			
+			<div class="remember">
+			<input type="checkbox" checked name="rememberid" id="rememberMe" value="Y" class="allCheck top2fix" title="Checking this option will log you in automatically next time you visit ScienceDirect"/>
+			<label for="rememberMe" title="Checking this option will log you in automatically next time you visit ScienceDirect">Remember me</label>
+			</div>
+            
+			<input type="hidden" name="_ob" value="MiamiLogonURL">
+			<input type="hidden" name="targetURL" value="http://www.sciencedirect.com/science/article/pii/S0950705112002079" >
+			<input type="hidden" name="returnURL" value="http://www.sciencedirect.com/science/article/pii/S0950705112002079" >
+            <div class="submit" >
+			
+			<div style="float:left;padding-left:0px;"><input class="button" type="Submit" name="arrow" alt="Login to ScienceDirect" title="Login to ScienceDirect" value="Login"/></div>
+        
+			
+			<div class="notRegistered"><span class="astPad">| </span><span><a href="https://www.sciencedirect.com/science?_ob=RegistrationURL&_method=display&_type=ip&_returnURL=http%3A%2F%2Fwww.sciencedirect.com%2Fscience%2Flogin&_acct=C000060492&_version=1&_userid=3415476&md5=3333589bd8860ad50176e8e207d48b16" title="" target="_top">Not Registered?</a></span></div>
+			
+			
+			<div style="clear:left;"></div>
+            </div>
+			
+            <div class="forgotpass">
+			<a href="http://www.sciencedirect.com/science?_ob=ReminderURL&_method=display&_acct=C000060492&_version=1&_userid=3415476&md5=c7e0e65f38b146497ba49837c17be55b" target="passwd" onClick="var remindWin;remindWin=window.open('','passwd','scrollbars=yes,resizable=yes,directories=no,toolbar=n,menubar=no,status=no,width=650,height=300');" title="Click here for help in recovering your ScienceDirect access">Forgotten username or password?</a>
+            </div>
+            </form>
+        </div>
+	</div>
+
+	<!-- logged in -->
+	     
+
+
+
+<div id="navigationTop" class="clearfix" aria-label="ScienceDirect" role="navigation">
+    <ul class="nav main">
+        <li class="last">
+            <a class=" canonHomeLink" href="http://www.sciencedirect.com" method="userHomePage" btn="Y" zone="TopNavBar" origin="home" target="_top" name="Home" title="Home" >Home</a>
+        </li>
+        <li>
+            <!--<h1>-->
+            <a  href="http://www.sciencedirect.com/science/browse" type="all" auth="y" zone="TopNavBar" origin="article" target="_top" name="Publications"  title="Publications">Publications</a>
+            <!--</h1>-->
+        </li>
+        
+        <li>
+            <a  href="http://www.sciencedirect.com/science?_ob=MiamiSearchURL&_method=requestForm&_btn=Y&_zone=TopNavBar&_origin=article&_acct=C000060492&_version=1&_urlVersion=1&_userid=3415476&md5=7ff28c8820be65351c86d4e878bcb09a" target="_top" name="Search" title="Search" >Search</a>
+        </li>
+        
+        
+        <li>
+            <a  href="http://www.sciencedirect.com/science?_ob=UserSubscriptionURL&_method=begin&_btn=Y&_zone=TopNavBar&_origin=article&_acct=C000060492&_version=1&_urlVersion=1&_userid=3415476&md5=1b2ae01c7444cf618717d4bffb24a5b8" target="_top" name="account" title="My settings" >My settings</a>
+        </li>
+        
+        
+        
+        <li>
+            <a  href="http://www.sciencedirect.com/science?_ob=MiamiSDIURL&_method=listAlerts&_btn=Y&_zone=TopNavBar&_origin=article&_acct=C000060492&_version=1&_urlVersion=0&_userid=3415476&md5=9fa27112b9fe419504ebcf9ae035539a" target="_top" name="alert" title="Alerts" >My alerts</a>
+        </li>
+        
+        
+        <li>
+            <a  href="http://www.sciencedirect.com/science?_ob=ShoppingCartURL&_method=display&_zone=TopNavBar&_origin=article&_acct=C000060492&_version=1&_userid=3415476&md5=2456c83adb8c246da91bbee193bf84ce" target="_top" name="cart" title="Shopping Cart" >Shopping cart</a>
+        </li>
+        
+    </ul>
+    <ul class="nav misc">
+        <li><span id="ChatHeader"></span></li>          
+        <li class="last"  ><a href="http://www.sciencedirect.com/science?_ob=HelpURL&_file=browse_open_doc.htm&_btn=Y&_zone=TopNavBar&_origin=article&_acct=C000060492&_version=1&_urlVersion=0&_userid=3415476&md5=67d56109caeb9309ed3b5a942dd48ad0" target="sdhelp" title="Help (Opens new window)" onClick="var helpWin; helpWin=window.open('http://www.sciencedirect.com/science?_ob=HelpURL&_file=browse_open_doc.htm&_btn=Y&_zone=TopNavBar&_origin=article&_acct=C000060492&_version=1&_urlVersion=0&_userid=3415476&md5=67d56109caeb9309ed3b5a942dd48ad0','sdhelp','scrollbars=yes,resizable=yes,directories=no,toolbar=no,menubar=no,status=no,width=760,height=570'); helpWin.focus(); return false" >Help</a></li>      
+    </ul> 
+    
+        
+            
+        
+               
+</div>
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<div id="page-area">
+  <div id="articleToolbar">
+    <div id="articleNav">
+  <ul aria-label="Article options" role="navigation">
+    <li>
+      <!-- return to gateway -->
+       
+      
+    </li>
+
+
+
+
+
+<li>
+      <div class="icon_exportarticlesci_dir" title="Export citation">
+        <div class="icon"></div>
+        <a href="/science?_ob=DownloadURL&_method=confirm&_eidkey=1-s2.0-S0950705112002079&count=1&_docType=FLA&zone=toolbar&_acct=C000060492&_version=1&_userid=3415476&md5=11529bb9175fd6b227f2dee705fdd94a" 
+        >Export citation</a>
+      </div>
+</li>
+  
+
+
+
+
+<li>
+  <div class="icon_pdf">
+    <div class="icon"></div>
+    <a id="pdfLink"  href="http://www.sciencedirect.com/science?_ob=MiamiImageURL&_cid=271505&_user=3415476&_pii=S0950705112002079&_check=y&_origin=article&_zone=toolbar&_coverDate=2013-Jan-31&view=c&originContentFamily=serial&wchp=dGLzVlt-zSkWb&md5=2002f1244b81ad3c66277636980fef2b&pid=1-s2.0-S0950705112002079-main.pdf" target="newPdfWin"  pdfurl="http://www.sciencedirect.com/science?_ob=MiamiImageURL&_cid=271505&_user=3415476&_pii=S0950705112002079&_check=y&_origin=article&_zone=toolbar&_coverDate=2013-Jan-31&view=c&originContentFamily=serial&wchp=dGLzVlt-zSkWb&md5=2002f1244b81ad3c66277636980fef2b&pid=1-s2.0-S0950705112002079-main.pdf"  class="big pdf ext_sdlink" style="cursor:pointer" title="Download PDF" >PDF  (539 K)</a>
+  </div>
+</li>
+ 
+ 
+
+
+
+<li class="optionsPos">
+      <div id="moreOptionsButton" title="Show article options">
+        <a href="#">More options...</a>
+        <div class="down_sci_dir"></div>
+      </div>
+
+<!-- More Options Starts-->
+<div id="moreOptionsMenu" class="articleOptions articleOptionssci_dir">
+<ul class="menuContent">
+
+
+    
+    <li>
+    <ul class="ereader">
+        <li class="title">
+            eReader format &nbsp;<a title="Help" onclick="var help; help=window.open('http://www.sciencedirect.com/science/help');">What's this?</a>
+        </li>
+        <li>
+            <a id="epubLink" class="erLink" href="http://www.sciencedirect.com/science/ereader/epub/S0950705112002079/1368774445/09507051/1-s2.0-S0950705112002079/serial/?md5=3127880b42cef3cb4e6194d33bdf1bc7"  title="ePub">
+                <span class="icon epub">&#160;</span><span class="ereadertext">ePub</span>
+            </a>
+        </li>
+        <li>
+            <a id="mobiLink" class="erLink" href="http://www.sciencedirect.com/science/ereader/mobi/S0950705112002079/1368774445/09507051/1-s2.0-S0950705112002079/serial/?md5=3127880b42cef3cb4e6194d33bdf1bc7"  title="Mobipocket">
+                <span class="icon mobi">&#160;</span><span class="ereadertext">Mobipocket</span>
+            </a>
+        </li>
+    </ul>
+    </li>
+    
+
+
+
+
+
+<li>
+    <div class="emailsci_dir">
+        <div></div>
+        <a title="Email this article" href="/science?_ob=EmailFriendURL&_method=gatherInfo&refSource=html&count=1&_eidkey=1-s2.0-S0950705112002079&_acct=C000060492&_version=1&_userid=3415476&md5=226798011780cc83139c797662f6e442"  >Email article</a>
+    </div>
+</li>
+
+  
+
+
+
+
+   
+       <li>
+          <div id="alertOn" style="display:none;" class="alertsci_dir">
+            <div></div>
+            <span>
+            Signed up for journal alerts&nbsp;[<a href="/science?_ob=PublicationURL&newIssueAlert=2&_cid=271505&_pubType=J&_auth=y&originContentFamily=serial&_pii=S0950705112002079&_acct=C000060492&_version=1&_urlVersion=0&_userid=3415476&md5=db3ee7397195e59a6a988566291e031f">remove</a>]</span>
+          </div>
+          <div id="alertOff" style="display:inline;"  class="alertsci_dir">
+            <div></div>
+            <a title="Set new Volumes / Issues alert" href="/science?_ob=PublicationURL&newIssueAlert=2&_cid=271505&_pubType=J&_auth=y&originContentFamily=serial&_pii=S0950705112002079&_acct=C000060492&_version=1&_urlVersion=0&_userid=3415476&md5=db3ee7397195e59a6a988566291e031f"
+               >
+            Alert me about new articles in this journal
+            </a>
+          </div>
+          <div id="rsltInd" style="display:none;">
+            <div class="imgIcon"><h3><img src="http://cdn.els-cdn.com/sd/errorIcon.gif" alt="Failure" title="Failure"/></h3></div>
+            <div class="confirmMsgText">Your selection(s) could not be saved due to an internal error. Please try again.</div>
+          </div>          
+      </li>
+    
+
+
+<li>
+    <div class="thumbnailsci_dir">
+        <div></div>
+        <a href="javascript:void(0);" id="optImgToggle" title="">Show thumbnail images</a>
+    </div>
+</li>
+
+</ul>
+<div id="articleOptionsAd" role="banner" class="ad"></div>
+</div>
+<!-- More options Ends -->
+</li>
+<li id="erToolbar"></li>
+
+
+
+
+</ul>
+</div>
+
+<div class="sdSearch" aria-label="Quick search" role="search">
+    <fieldset>
+        <div class="left">
+            <input  id="quickSearch" type="text" name="quickSearch" value="" size="30" maxlength="450" title="Perform a quick search on ScienceDirect"><button class="submit"  title="Submit quick search">Search</button>
+        </div>
+        <div id="quickSearchButton" class="right" title="Show more quick search options">
+            <div  class="down_sci_dir"></div>
+        </div>
+    </fieldset>
+</div>
+<div class="clear"></div>
+<div class="quickSearch" id="sdQuickSearch" aria-label="Extended search" role="search">
+<div class="extSearch" role="search" aria-label="Quick Search">
+
+
+<form name="qkSrch" method="get" target="_top" action="/science" style="margin:0px;">
+<input type="hidden" name="_ob" value="QuickSearchURL">
+<input type="hidden" name="_method" value="submitForm">
+<input type="hidden" name="_acct" value="C000060492">
+<input type="hidden" name="_origin" value="article">
+<input type="hidden" name="_zone" value="qSearch">
+<input type="hidden" name="md5" value="de9097306f53607c10023434ed9997eb">
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0" style="margin: 0;">
+<tr valign="middle">
+
+<!-- JS enabled. Code for Articles -->
+
+<td align="center" nowrap="nowrap" >
+<label for="Articles" style="cursor:pointer;padding-right:0;margin-left:2px;" class="nojs">Articles</label>
+<input type="radio" class="qsRadio nojs" name="searchtype" id="Articles" value="a" checked="checked" style="" class="nojs artRadio"/>
+<noscript>
+<!-- JS disabled. Code for Articles -->
+<span style="margin-left:13px;">Articles</span>
+</noscript>
+</td>
+
+
+<!-- Code related for toggling labels -->
+
+
+<td align="right"><label for="qs_all" id="fieldLabel">&nbsp;&nbsp;&nbsp;&nbsp;All fields</label></td>
+<td align="left"><input class="textbox qsinput xpstyle qsImgBlurFocus" type="text" name="qs_all" id="qs_all" value="" size="30" maxlength="450" title="For example: heart attack AND behavior?"></td>
+
+
+
+
+<td align="right"><label for="qs_author">&nbsp;&nbsp;&nbsp;&nbsp;Author</label></td>
+<td align="left" colspan="5"><input class="textbox qsinput xpstyle" type="text" name="qs_author" id="qs_author" value="" size="33" maxlength="450" title="e.g. J S Smith or John Smith or Smith JS" style="_width:100%"></td>
+<td nowrap="nowrap">
+
+</td><td></td><td></td>
+<td align="right" nowrap="nowrap" width="90%" valign="middle">
+<a href="http://www.sciencedirect.com/science?_ob=MiamiSearchURL&_method=requestForm&_btn=Y&_acct=C000060492&_version=1&_urlVersion=1&_userid=3415476&md5=a035fe2221c065f00cc4aff9ae536a27" style="vertical-align:bottom;font-size:0.92em;" >Advanced search</a>
+</td>
+</tr>
+<tr>
+
+<!-- JS enabled. Code for images -->
+
+<td align="center" nowrap="nowrap" >
+<label for="Images" style="cursor:pointer;padding-right:0;" class="nojs">Images</label>
+<input class="qsRadio nojs" type="radio" name="searchtype" id="Images" value="i" class="nojs artImages"/>
+<noscript>
+<!-- JS disabled. Code for Images -->
+<span style="margin-left:13px;"><a href="?imgSel=Y" >Images</a></span>
+</noscript>
+</td>
+
+
+<td align="right"><label for="qs_title">&nbsp;&nbsp;&nbsp;&nbsp;Journal/Book&nbsp;title</label></td>
+<td align="left"><input class="textbox qsinput xpstyle" type="text" id="qs_title" name="qs_title" value="" size="30" maxlength="450" title="For example: journal of molecular biology"></td>
+
+
+<td align="right" class="toggleQukSrch2"><label for="qs_vol" id="volField">&nbsp;&nbsp;&nbsp;&nbsp;Volume</label></td>
+<td align="left" class="toggleQukSrch"><input class="textbox qsinput xpstyle" type="text" name="qs_vol" id="qs_vol" value="" size="3" maxlength="10" style="width:30px;"></td>
+<td align="right" class="toggleQukSrch2"><label for="qs_issue" id="issueField">&nbsp;&nbsp;Issue</label></td>
+<td align="left" class="toggleQukSrch"><input class="textbox qsinput xpstyle" type="text" name="qs_issue" id="qs_issue" value="" size="3" maxlength="10" style="width:30px"></td>
+<td align="right" class="toggleQukSrch2"><label for="qs_pages" id="pageField">&nbsp;&nbsp;Page</label></td>
+<td align="right" class="toggleQukSrch"><input class="textbox qsinput xpstyle" type="text" name="qs_pages" id="qs_pages" value="" size="3" maxlength="10" title="For example: 14-27" style="width:30px"></td>
+
+
+<td  align="right" nowrap="nowrap">
+<input class="button" id="submit_search" type="Submit" alt="Submit Quick Search" title="Submit Quick Search" value="Search" name="sdSearch">
+</td> 
+<td align="right" nowrap="nowrap" colspan="8"  valign="bottom">
+<a class="icon_qmarkHelpsci_dir" href="http://www.sciencedirect.com/science?_ob=HelpURL&_origin=srch_form&_zone=TopNavBar&_file=qs_tips.htm&_acct=C000060492&_version=1&_urlVersion=0&_userid=3415476&md5=a7ff5abd2f98492fb689c3d022215199" target="sdhelp" onMouseOver="window.status='Help is Available';return true" onMouseOut="window.status='';return true" onClick="var helpWin;helpWin=window.open('http://www.sciencedirect.com/science?_ob=HelpURL&_file=qs_tips.htm&_acct=C000060492&_version=1&_urlVersion=0&_userid=3415476&md5=f079525c079095602596e93106c24d06','sdhelp','scrollbars=yes,resizable=yes,directories=no,toolbar=no,menubar=no,status=no,width=760,height=570');helpWin.focus();return false" style="font-size:0.92em;padding-right:0;" >Search tips</a>
+</td>
+</tr>
+</table>
+</form>
+</div>
+
+
+
+ 
+</div>
+
+<div style="color : #FF0000; font-weight : bold;border:0px solid red;">
+  
+  
+  
+  
+</div>
+
+
+
+
+
+  </div>
+  <div style="clear:both;"></div>
+  <div id="leftCloseBar">
+      <div class="closed" title="Open to view article outline"></div>
+  </div>
+  <div id="leftPane" class="column" aria-label="table of contents" role="navigation">
+  <div id="leftPaneInner">
+    <div id="outline" class="outline">
+      <script type="text/javascript">
+      document.write("<div class='outlineMsg'>Article outline is loading...</div>");
+      </script>
+      <noscript>
+      <div class="infoMsg">
+      <div style="float: left; width: 20px; "><img border="0" src="http://cdn.els-cdn.com/sd/alertIcon.gif" valign="top" alt="Alert message"></div>
+      <div style="padding-left:25px;">JavaScript is disabled on your browser. <br><div style="padding-top:10px;">
+      Please enable JavaScript to use all the features on this page.</div></div>
+      </div>
+      </noscript>
+      </div>
+      <div id="leftOpenBar">
+        <div class="open" title="Open to view article outline"></div>
+      </div>
+  </div>
+  </div>
+  <div id="centerPane" class="column">
+    <div id="centerInner" class="centerInner svBigBox" aria-label="Article" role="main">
+      
+      <noscript>
+      <div class="msgBox" style="margin-top:10px;">
+          <span class="errMsg">
+            <div>JavaScript is disabled on your browser.  Please enable JavaScript to use all the features on this page.</div>
+         </span>
+      </div><br/>
+      </noscript>
+
+      <div id="frag_1" class="page_fragment auth_frag" data-first="true" data-fid="1"><div class="authClaim"></div><div class="head"><div class="publisherLogo"><img alt="" id="pubLogo" class="imgLazyJSB" src="/sd/grey_pxl.gif" data-defaultlogo="/elsevier.gif"><noscript><img alt="" src="http://origin-cdn.els-cdn.com/sd/elsevier.gif"></noscript></div><div class="publicationHead"><div class="title"><a title="Go to Knowledge-Based Systems on SciVerse ScienceDirect" href="http://www.sciencedirect.com/science/journal/09507051" queryStr="?zone=centerPane" class="cLink"><span>Knowledge-Based Systems</span></a></div><p class="volIssue"><a title="Go to table of contents for this volume/issue" href="http://www.sciencedirect.com/science/journal/09507051/37/supp/C">Volume 37</a>, January 2013, Pages 146&ndash;153</p></div><div class="publicationCover"><a queryStr="?zone=publicationLogo" class="cLink" href="http://www.sciencedirect.com/science/journal/09507051/37/supp/C"><img alt="Cover image" src="/sd/grey_pxl.gif" class="toprightlogo imgLazyJSB" data-publogo="1-s2.0-S0950705112X00121-cov150h.gif"><noscript><img alt="Cover image" src="http://origin-ars.els-cdn.com/content/image/1-s2.0-S0950705112X00121-cov150h.gif" class="toprightlogo"></noscript></a></div></div><div class="module_topic_paths"></div><h1 class="svTitle" id="">A new similarity function for selecting neighbors for each target item in collaborative filtering</h1><ul class="authorGroup noCollab"><li><a href="#" class="authorName" id="authname_N27103a00N273611a8" data-t="a" data-fn="Keunho" data-ln="Choi" data-pos="1">Keunho Choi</a> <a href="mailto:keunho@korea.ac.kr"><img class="imgLazyJSB" src="/sd/grey_pxl.gif" alt="E-mail the corresponding author" data-inlimg="/entities/REemail.gif"><noscript><img src="http://origin-cdn.els-cdn.com/sd/entities/REemail.gif" alt="E-mail the corresponding author"></noscript></a>, </li><li><a href="#" class="authorName" id="authname_N27103a00N27361238" data-t="a" data-fn="Yongmoo" data-ln="Suh" data-pos="2">Yongmoo Suh</a><a title="Corresponding author contact information" href="#cor1" id="bcor1" class="intra_ref auth_corr"><img class="imgLazyJSB" alt="Corresponding author contact information" src="/sd/grey_pxl.gif" data-inlimg="/entities/REcor.gif"><noscript><img alt="Corresponding author contact information" src="http://origin-cdn.els-cdn.com/sd/entities/REcor.gif"></noscript></a><sup>, </sup><a href="mailto:ymsuh@korea.ac.kr"><img class="imgLazyJSB" src="/sd/grey_pxl.gif" alt="E-mail the corresponding author" data-inlimg="/entities/REemail.gif"><noscript><img src="http://origin-cdn.els-cdn.com/sd/entities/REemail.gif" alt="E-mail the corresponding author"></noscript></a></li></ul><!--VALIDHTML--><ul class="affiliation"><li> <span id="">Business School, Korea University, Anam-Ro 145, Seongbuk-Gu, Seoul 136-701, Republic of Korea</span></li></ul><!--VALIDHTML--><!--VALIDHTML--><dl class="articleDates"><dd>Received 28 November 2011</dd><dd>Revised 25 July 2012</dd><dd>Accepted 25 July 2012</dd><dd>Available online 8 August 2012</dd></dl><!--VALIDHTML--><ul class="articleDoi"><li><a id="ddDoi" href="http://dx.doi.org/10.1016/j.knosys.2012.07.019" target="doilink" onclick="var doiWin; doiWin=window.open('http://dx.doi.org/10.1016/j.knosys.2012.07.019','doilink','scrollbars=yes,resizable=yes,directories=yes,toolbar=yes,menubar=yes,status=yes'); doiWin.focus()">http://dx.doi.org/10.1016/j.knosys.2012.07.019</a>, <a href="http://www.sciencedirect.com/science/help/doi.htm" target="sdhelp" onmouseover="window.status='Help is Available';return true" onclick="var helpWin; helpWin=window.open('http://www.sciencedirect.com/science/help/doi.htm','sdhelp','scrollbars=yes,resizable=yes,directories=no,toolbar=no,menubar=no,status=no,width=760,height=570'); helpWin.focus()">How to Cite or Link Using DOI</a></li></ul><!--VALIDHTML--><ul class="articleInfo"><li class="permissions" id="permissions"></li></ul><!--VALIDHTML--><div id="ppvPlaceHolder" class="hidden"></div><!--VALIDHTML--><div id="refersToAndreferredToBy"><dl id="referredToBy" class="documentThread"><!--Referred To By--></dl></div><!--VALIDHTML--><hr id="author1"><div class="abstract svAbstract "><h2 class="secHeading" id="section_abstract">Abstract</h2><p id="sp0005">As one of the collaborative filtering (CF) techniques, memory-based CF technique which recommends items to users based on rating information of like-minded users (called neighbors) has been widely used and has also proven to be useful in many practices in the age of information overload. However, there is still considerable room for improving the quality of recommendation. Shortly, similarity functions in traditional CF compute a similarity between a target user and the other user without considering a target item. More specifically, they give an equal weight to each of the co-rated items rated by both users. Neighbors of a target user, therefore, are identical for all target items. However, a reasonable assumption is that the similarity between a target item and each of the co-rated items should be considered when finding neighbors of a target user. Additionally, a different set of neighbors should be selected for each different target item. Thus, the objective of this paper is to propose a new similarity function in order to select different neighbors for each different target item. In the new similarity function, the rating of a user on an item is weighted by the item similarity between the item and the target item. Experimental results from MovieLens dataset and Netflix dataset provide evidence that our recommender model considerably outperforms the traditional CF-based recommender model.</p></div><!--VALIDHTML--><script>prs.rt("abs_end");</script><div id="SD_BA1P" class="sgfNoTitleBar sgfNoGadgetBorder svDoNotLink"></div><!--VALIDHTML--><h2 id="kwd_1">Keywords</h2><ul class="keyword" id=""><li id=""><span id="">Recommendation system</span>; </li><li id=""><span id="">Collaborative filtering</span>; </li><li id=""><span id="">Item similarity</span>; </li><li id=""><span id="">Information overload</span></li></ul><!--VALIDHTML--><hr><h2 class="svArticle" id="s0005">1. Introduction</h2><p class="svArticle section" id="p0005">In the age of information overload, the importance of personalized recommendation systems is growing. The reason for this increase is because such systems enable buyers to find what they want immediately without wasting their time and also allow sellers to provide buyers with the items they are likely to purchase. As an effort to deal with this growing significance, several techniques for developing the recommendation systems have been studied. They include content-based filtering (CBF), collaborative filtering (CF), and association rule or sequential pattern analysis. Among them, the CF technique has been widely used due to its simplicity and effectiveness, and has also proven to be useful in many practices.</p><!--VALIDHTML--><p class="svArticle section" id="p0010">In traditional CF, items are recommended based on rating information of like-minded users (known as neighbors) on the items. Therefore, the ability to identify neighbors is the most significant part of CF for improving recommendation quality <a href="#b0035" id="bb0035" class="intra_ref">[7]</a>&#xA0;and&#xA0;<a href="#b0040" id="bb0040" class="intra_ref">[8]</a>. Most CF-based recommendation systems typically identify neighbors, who rate items similarly to a target user by using similarity functions such as the Pearson correlation coefficient, cosine similarity, or distance-based similarity. Such similarity functions represent the similarity between a target user and the other user based on the rating information of items rated by both users. In this process, traditional CF gives an equal weight to each of the co-rated items when calculating the similarity between two users without considering the similarity between a target item and each co-rated item. Thus, neighbors of a target user are identical for all target items. However, a reasonable assumption is that a target user&rsquo;s neighbors should be different for a different target item. When the target item is a horror movie, for example, a user who has a similar preference on horror movie needs to be considered as a more important neighbor than the other user who has a similar preference on movies of other genres. Therefore, it is reasonable that item similarity between a target item and each of the co-rated items should be considered when finding neighbors of a target user. Moreover, a different set of neighbors should be selected for each different target item.</p><!--VALIDHTML--><p class="svArticle section" id="p0015">Although a number of studies have enhanced the effectiveness of CF-based recommendation systems by addressing issues, such as the new user problem (also referred to as a cold start problem) <a href="#b0090" id="bb0090" class="intra_ref">[18]</a>&#xA0;and&#xA0;<a href="#b0160" id="bb0160" class="intra_ref">[32]</a>, the new item problem (also known as the first rater problem) <a href="#b0020" id="bb0020" class="intra_ref">[4]</a>&#xA0;and&#xA0;<a href="#b0130" id="bb0130" class="intra_ref">[26]</a>, and the sparsity problem <a href="#b0075" id="bb0075" class="intra_ref">[15]</a>, <a href="#b0090" id="bb0090" class="intra_ref">[18]</a>, <a href="#b0125" id="bb0125" class="intra_ref">[25]</a>&#xA0;and&#xA0;<a href="#b0160" id="bb0160" class="intra_ref">[32]</a>, few studies have addressed the issue mentioned in this paper.</p><!--VALIDHTML--><p class="svArticle section" id="p0020">The objective of our study is to propose a new similarity function in order to select different neighbors for each different target item. In the new similarity function, the rating of a user on an item is weighted by the item similarity between the item and the target item. The similarity function is expected to result in better recommendation. To that end, we first calculated item similarity between a target item and each of the co-rated items and then used it as the weight when calculating user similarity between a target user and other user. Experiments for validating the effectiveness of our approach were conducted using both <em>MovieLens</em> dataset and <em>Netflix</em> dataset.</p><!--VALIDHTML--><p class="svArticle section" id="p0025">The rest of this paper is organized as follows. Section <span id="bs0010"><a href="#s0010" id="ancbs0010" class="intra_ref">2</a></span> reviews previous studies regarding recommendation systems. Section <span id="bs0015"><a href="#s0015" id="ancbs0015" class="intra_ref">3</a></span> addresses the weakness of traditional collaborative filtering and an approach to realizing our idea. Section <span id="bs0035"><a href="#s0035" id="ancbs0035" class="intra_ref">4</a></span> explains how our approach makes a difference based on the results from experiments and also describes the implications of the experiments. The last section concludes our paper with summary, implications, and limitation.</p><!--VALIDHTML--><h2 class="svArticle" id="s0010">2. Literature review</h2><p class="svArticle section" id="p0030">To date, many recommendation systems have been developed and most of them have used content-based filtering (CBF) and/or collaborative filtering (CF) as their fundamental techniques.</p><!--VALIDHTML--><p class="svArticle section" id="p0035">CBF recommendation systems typically (1) build an item profile by extracting a set of features from each item in the item set, (2) build a content-based user profile from a set of features of the items which each user purchased, (3) calculate the similarity between the user profiles and the item profiles using similarity function and (4) recommend top <em>n</em> items with high similarity scores. Specifically, they recommend items based on the similarity between items. In the early stage of CBF recommendation systems, they were used to recommend documents such as net news <span id="bb0120"><a href="#b0120" id="ancbb0120" class="intra_ref">[24]</a></span>, web pages <span id="bb0170"><a href="#b0170" id="ancbb0170" class="intra_ref">[34]</a></span> and books <span id="bb0150"><a href="#b0150" id="ancbb0150" class="intra_ref">[30]</a></span>. Both user profiles and item profiles are represented by vectors of associated weights given to a set of keywords, which are extracted from documents using information retrieval techniques  <a href="#b0015" id="bb0015" class="intra_ref">[3]</a>&#xA0;and&#xA0;<a href="#b0195" id="bb0195" class="intra_ref">[39]</a> or information filtering techniques <span id="bb0025"><a href="#b0025" id="ancbb0025" class="intra_ref">[5]</a></span>. A similarity score is computed based on both profiles using a heuristic function, such as the Pearson correlation coefficient, cosine similarity, or distance-based similarity  <a href="#b0020" id="bb0020" class="intra_ref">[4]</a>&#xA0;and&#xA0;<a href="#b0120" id="bb0120" class="intra_ref">[24]</a>. These systems, however, have a few limitations such as insufficient features problem <span id="bb0210"><a href="#b0210" id="ancbb0210" class="intra_ref">[42]</a></span>, over-specialization problem <span id="bb0005"><a href="#b0005" id="ancbb0005" class="intra_ref">[1]</a></span>, and new or unusual user problem  <a href="#b0005" id="bb0005" class="intra_ref">[1]</a>&#xA0;and&#xA0;<a href="#b0030" id="bb0030" class="intra_ref">[6]</a>.</p><!--VALIDHTML--><p class="svArticle section" id="p0040">On the other hand, CF-based recommendation systems typically (1) construct a user profile from rating information of each user on items, (2) select neighbors of a target user using similarity function based on the rating information, (3) predict the ratings of the target user on target items as an average, weighted sum or adjusted weighted sum of ratings given to them by neighbors, and (4) recommend top-rated <em>n</em> items. These methods of rating prediction which recommend items based on the similarity between users are called <em>memory-based</em> CF  <a href="#b0080" id="bb0080" class="intra_ref">[16]</a>, <a href="#b0155" id="bb0155" class="intra_ref">[31]</a>, <a href="#b0215" id="bb0215" class="intra_ref">[43]</a>, <a href="#b0230" id="bb0230" class="intra_ref">[46]</a>, <a href="#b0240" id="bb0240" class="intra_ref">[48]</a>&#xA0;and&#xA0;<a href="#b0245" id="bb0245" class="intra_ref">[49]</a>. Another method of rating prediction is <em>model-based</em> CF in which a model such as a probabilistic model or a machine learning model is built from a large collection of ratings in order to predict ratings of target items  <a href="#b0050" id="bb0050" class="intra_ref">[10]</a>, <a href="#b0060" id="bb0060" class="intra_ref">[12]</a>, <a href="#b0065" id="bb0065" class="intra_ref">[13]</a>, <a href="#b0100" id="bb0100" class="intra_ref">[20]</a>, <a href="#b0105" id="bb0105" class="intra_ref">[21]</a>, <a href="#b0110" id="bb0110" class="intra_ref">[22]</a>, <a href="#b0145" id="bb0145" class="intra_ref">[29]</a>, <a href="#b0165" id="bb0165" class="intra_ref">[33]</a>, <a href="#b0185" id="bb0185" class="intra_ref">[37]</a>, <a href="#b0205" id="bb0205" class="intra_ref">[41]</a>&#xA0;and&#xA0;<a href="#b0225" id="bb0225" class="intra_ref">[45]</a>.</p><!--VALIDHTML--><div class="page_fragment_ind auth_frag" data-id="frag_2"></div></div>
+
+       
+        
+    </div>
+ </div>
+ <div id="rightPane" class="column" aria-label="Related content" role="complementary">
+   <div class="toggleSideBar">
+      <a tabindex=0>
+         <div class="close" title="Open to view article outline"></div>
+      </a>
+    </div>
+    <iframe class="dummyiFrame" frameborder='0' border='0' style="position: absolute;background:none;border: 0px;top: 0;left:0;width:100%;height:100%;z-index
+:-1;" src=""></iframe>
+    <div id="rightInner" class="rightInner">
+       <h2 class="accordionHead first-tab bibliographic">
+    <span class="showHideIcon"></span>
+    Bibliographic information
+</h2>
+<div class="accordionContent">
+    <div class="innerPadding js_bibliographic_content">
+
+    </div>
+</div>
+
+
+  <h2 class="accordionHead relatedArticles">
+    <span class="showHideIcon"></span>
+    Citing and related articles
+  </h2>
+  <div class="accordionContent">
+    <div class="innerPadding js_citation_content">
+      
+        
+          <ol>
+             <li class="note"><p>Your search for "<a href="/science?_ob=RerunURL&_method=submit&_searchStrId=-251116812&_rerunOrigin=scholar.google&_count=&_isCountNotDisplayed=&_orig=article&_zone=rightPane&panel=citeRelatedArt&_acct=C000060492&_version=1&_userid=3415476&md5=c759ddb3191c00f5426be9f60161ecab"><span class="rerunLink">collaborative filtering PUB-DATE > 2012 </span></a>" would return 694 results on ScienceDirect. Here are the top results: </p></li>
+          </ol>
+          <div class="articleList"> 
+             <ol id="rerunArticles"></ol> 
+          </div>
+        
+     
+
+     
+     
+        <div class="articleList">
+             <h3>Related articles</h3>
+             <ol id="relArtList"><li class="note"><p>No articles found.</p></li></ol>
+        </div>
+     
+
+     
+         
+             <ol class="citedByLink"><div class="boxLink"><a href="/science?_ob=RedirectURL&_method=outwardLink&_partnerName=656&_eid=1-s2.0-S0950705112002079&_pii=S0950705112002079&_origin=article&_zone=art_page&_targetURL=http%3A%2F%2Fwww.scopus.com%2Finward%2Fcitedby.url%3Feid%3D2-s2.0-84870054259%26partnerID%3D10%26rel%3DR3.0.0%26md5%3D9ffc1d8871438431d98e7a5abc4d8434&_acct=C000060492&_version=1&_userid=3415476&md5=95d871fe28cf6a51a35cc60abf1f5bf5"  rel="nofollow" class="olSpawnWindow" target="outwardLink"></a> <font color="#000000"> <span class='scopus_logo_txt'>Cited by in Scopus (0)</span></font></div></ol>
+         
+     
+
+     
+         
+             <div class="articleList">
+                 <h3>Related reference work articles</h3>
+                 <ol id="relRefList"><li class="note"><p>No articles found.</p></li></ol>
+             </div>
+         
+      
+
+    </div>
+  </div>
+
+
+
+  <h2 class="accordionHead applications">
+    <span class="showHideIcon"></span>
+    Applications and tools
+  </h2>
+  <div class="accordionContent">
+    <div class="innerPaddingApp js_application_content">
+
+      
+        <div id="SD_AT1P" class="boxLink sgfNoTitleBar sgfNoGadgetBorder"></div>
+      
+
+      
+        <div id="SD_FTA1" class="boxLink sgfHorToolbar sgfShowMyApps sgfShowMoreLessApps"></div>
+      
+
+    </div>
+  </div>
+
+
+<h2 class="accordionHead last-tab workspace">
+    <span class="showHideIcon"></span>
+    Workspace
+</h2>
+<div class="accordionContent">
+    <div class="innerPadding js_workspace_content">
+        <div class="scrollArea">
+           <li class="note"><p>No content has been selected.</p></li>
+           <div id="workSpaceView"></div>
+        </div>
+    </div>
+    <div class="hidescrollbar"></div>
+</div>
+
+    </div>
+ </div>
+</div>
+<div style="clear:both;"></div>
+<div id="footer-area" aria-label="product support" role="contentinfo">
+  <div id="sdFoot">
+    <div id="footer">	
+  <div class="bottomArticle"></div>
+  <div class="padding">
+    <div id="linkArea">
+      <div class="padding">
+        <div style="float:left;width:0;height:1px;"></div>
+        <div id="banner-bottom">
+          <a href="http://www.elsevier.com" target="_blank"><img src="http://cdn.els-cdn.com/sd/wordmark_elsevier.png" alt="Elsevier homepage (opens in a new window)" title="Elsevier homepage (opens in a new window)"></a>
+        </div>
+        <ul class="col5">
+<li><a target="_blank" href="http://www.info.sciverse.com/sciencedirect?utm_source=sciencedirect&utm_medium=link&utm_campaign=aboutsd">About ScienceDirect</a></li>
+</ul>
+<ul class="col5">
+<li><a target="_blank" href="http://www.elsevier.com/?utm_source=sciencedirect&utm_medium=link&utm_campaign=aboutelsevier">About Elsevier</a></li>
+</ul>
+<ul class="col5">
+<li> <a target="_blank" href="http://www.sciencedirect.com/science/contactus">Contact and support</a></li>
+</ul>
+<ul class="col5">
+<li><a target="_blank" href="http://www.elsevierscitech.com/forms/sd/form.html?utm_source=sciencedirect&amp;utm_medium=link&amp;utm_campaign=advert">Information for advertisers</a></li>
+</ul>
+<ul class="col5">
+<li><a target="_blank" href="http://www.elsevier.com/locate/termsandconditions?utm_source=sciencedirect&utm_medium=link&utm_campaign=terms">Terms and conditions</a></li>
+</ul>
+<ul class="col5">
+<li><a target="_blank" href="http://www.elsevier.com/privacypolicy?utm_source=sciencedirect&utm_medium=link&utm_campaign=privacy">Privacy policy</a></li>
+</ul>
+<script>function loadSCode(){if(typeof SDM!="undefined"){var e=document.getElementsByTagName("body")[0],t=document.createElement("script");t.src="//cdn.els-cdn.com/sd/js/adobe/s_code_131.js";e.appendChild(t);sendSCStats()}else{setTimeout(loadSCode,100)}}function sendSCStats(){if(typeof s_tc_sciencedirect!="undefined"){s.t()}else{setTimeout(sendSCStats,100)}}if(window.addEventListener){window.addEventListener("load",loadSCode,false)}else if(window.attachEvent){window.attachEvent("onload",loadSCode)}else{window.onload=loadSCode}</script>
+        <div class="clear"></div>
+        <!-- CSAS will be providing the links-->
+      </div>
+      <div class="padding" style="padding-top:8px;padding-bottom:4px;font-size:11px;">
+        Copyright &copy; 2013 <a href="http://www.elsevier.com" target="_blank">Elsevier B.V.</a> All rights reserved.  SciVerse&reg; is a registered trademark of Elsevier Properties S.A., used under license. ScienceDirect&reg; is a registered trademark of Elsevier B.V.
+      </div>
+      <div class="padding" style="padding-bottom:4px;padding-top:0px;font-size:11px;">
+              Cookies are used by this site. To decline or learn more, visit our <a href="http://www.info.sciverse.com/sciencedirect/cookies" target="_blank">Cookies</a> page
+        </div> 
+    </div>
+  </div>
+</div> <!--footer-->
+
+  </div><!--sdFooter-->
+</div><!--footer-area-->
+
+
+<form name="citationInfo" id ="citationInfo" method="POST" action="">
+    <input type="hidden" name="art_citation" value=""/>
+</form>
+<div id="pdfModalWindow" class="pdfModalWindow" style="display:none;" onClick="pdfCite.closePopup();"></div>
+
+
+<!-- PDFKING/PDFCITE -->
+<div id="suggestedPdfList" style="display:none;">
+
+</div>
+
+
+<script src="http://cdn.els-cdn.com/sd/js/sdX_131R4.js"></script>
+<script src="http://cdn.els-cdn.com/sd/js/sd_131R4.js"></script>
+<script>
+var sciverse="empty";
+var SDM=new Object;
+SDM.tm=new Object;
+SDM.tm.ahm='h'
+SDM.tm.chm='h'
+
+
+SDM.pm=new Object;
+SDM.pm.contentType = 'JL';
+SDM.doi = '10.1016/j.knosys.2012.07.019';
+SDM.pm.issn_or_isbn = "09507051";
+SDM.pm.mod_ISBN = "";
+  SDM.isMRWMODArticle = false ; 
+ 
+SDM.pm.mod_cid="";
+SDM.pm.mod_srcTitle="";
+SDM.pm.pii = 'S0950705112002079';
+SDM.pm.cid = '271505';
+SDM.pm.eid = '1-s2.0-S0950705112002079';
+SDM.pm.pdfEid = '1-s2.0-S0950705112002079-main.pdf';
+SDM.pm.pdfSize = '552747';
+SDM.pm.coverDate = '2013-Jan-31';
+SDM.pm.itemWeight = 'FULL-TEXT';
+SDM.pm.indexType = '';
+SDM.pm.sws = 'null';
+
+SDM.pm.fat = 'a014d013083f8b85fbdcd2917052b2c094bab681dfd1844d06850114759b86c42851eee056d560ee1a17682734d30fa427f286046c1fe8bf2ba7d158cfdf3ab3274ddb40f9f624405d7a98c487701a9e6430e9b6176740b424ce29c1a9765d8d6c91375d86ea7467608ea1d32be2845d76a9475e9e1424a6aeacfe82edefa72bf7714354cab8edb15926715366fd0de160954cb61eb4f440192eec7d778f2777';
+SDM.pm.frag = new Object;
+SDM.pm.frag.mapRetry = 20;
+SDM.pm.frag.mapRetryDelay = 2000;
+SDM.pm.frag.mapRetryFactor = 1.1;
+SDM.pm.frag.retry = 5;
+SDM.pm.frag.retryDelay = 2000;
+SDM.pm.frag.foldFactor = 1.5;
+SDM.pm.frag.hashWait = 5000;
+SDM.pm.frag.mapsStr='{ "fLength":10, "list" : [ "frag_1", "frag_2", "frag_3", "frag_4", "frag_5", "frag_6", "frag_7", "frag_8", "frag_9"], "crossRefs" : [ {"id":"pubLogo" , "fid":"frag_1" , "t":"u"}, {"id":"authname_N27103a00N273611a8" , "fid":"frag_1" , "t":"a"}, {"id":"authname_N27103a00N27361238" , "fid":"frag_1" , "t":"a"}, {"id":"bcor1" , "fid":"frag_1" , "t":"u"}, {"id":"ddDoi" , "fid":"frag_1" , "t":"u"}, {"id":"permissions" , "fid":"frag_1" , "t":"u"}, {"id":"ppvPlaceHolder" , "fid":"frag_1" , "t":"u"}, {"id":"refersToAndreferredToBy" , "fid":"frag_1" , "t":"u"}, {"id":"referredToBy" , "fid":"frag_1" , "t":"u"}, {"id":"author1" , "fid":"frag_1" , "t":"u"}, {"id":"section_abstract" , "fid":"frag_1" , "t":"u"}, {"id":"sp0005" , "fid":"frag_1" , "t":"u"}, {"id":"SD_BA1P" , "fid":"frag_1" , "t":"u"}, {"id":"kwd_1" , "fid":"frag_1" , "t":"u"}, {"id":"s0005" , "fid":"frag_1" , "t":"u"}, {"id":"p0005" , "fid":"frag_1" , "t":"u"}, {"id":"p0010" , "fid":"frag_1" , "t":"u"}, {"id":"bb0035" , "fid":"frag_1" , "t":"u"}, {"id":"bb0040" , "fid":"frag_1" , "t":"u"}, {"id":"p0015" , "fid":"frag_1" , "t":"u"}, {"id":"bb0090" , "fid":"frag_1" , "t":"u"}, {"id":"bb0160" , "fid":"frag_1" , "t":"u"}, {"id":"bb0020" , "fid":"frag_1" , "t":"u"}, {"id":"bb0130" , "fid":"frag_1" , "t":"u"}, {"id":"bb0075" , "fid":"frag_1" , "t":"u"}, {"id":"bb0090" , "fid":"frag_1" , "t":"u"}, {"id":"bb0125" , "fid":"frag_1" , "t":"u"}, {"id":"bb0160" , "fid":"frag_1" , "t":"u"}, {"id":"p0020" , "fid":"frag_1" , "t":"u"}, {"id":"p0025" , "fid":"frag_1" , "t":"u"}, {"id":"bs0010" , "fid":"frag_1" , "t":"u"}, {"id":"ancbs0010" , "fid":"frag_1" , "t":"u"}, {"id":"bs0015" , "fid":"frag_1" , "t":"u"}, {"id":"ancbs0015" , "fid":"frag_1" , "t":"u"}, {"id":"bs0035" , "fid":"frag_1" , "t":"u"}, {"id":"ancbs0035" , "fid":"frag_1" , "t":"u"}, {"id":"s0010" , "fid":"frag_1" , "t":"u"}, {"id":"p0030" , "fid":"frag_1" , "t":"u"}, {"id":"p0035" , "fid":"frag_1" , "t":"u"}, {"id":"bb0120" , "fid":"frag_1" , "t":"u"}, {"id":"ancbb0120" , "fid":"frag_1" , "t":"u"}, {"id":"bb0170" , "fid":"frag_1" , "t":"u"}, {"id":"ancbb0170" , "fid":"frag_1" , "t":"u"}, {"id":"bb0150" , "fid":"frag_1" , "t":"u"}, {"id":"ancbb0150" , "fid":"frag_1" , "t":"u"}, {"id":"bb0015" , "fid":"frag_1" , "t":"u"}, {"id":"bb0195" , "fid":"frag_1" , "t":"u"}, {"id":"bb0025" , "fid":"frag_1" , "t":"u"}, {"id":"ancbb0025" , "fid":"frag_1" , "t":"u"}, {"id":"bb0020" , "fid":"frag_1" , "t":"u"}, {"id":"bb0120" , "fid":"frag_1" , "t":"u"}, {"id":"bb0210" , "fid":"frag_1" , "t":"u"}, {"id":"ancbb0210" , "fid":"frag_1" , "t":"u"}, {"id":"bb0005" , "fid":"frag_1" , "t":"u"}, {"id":"ancbb0005" , "fid":"frag_1" , "t":"u"}, {"id":"bb0005" , "fid":"frag_1" , "t":"u"}, {"id":"bb0030" , "fid":"frag_1" , "t":"u"}, {"id":"p0040" , "fid":"frag_1" , "t":"u"}, {"id":"bb0080" , "fid":"frag_1" , "t":"u"}, {"id":"bb0155" , "fid":"frag_1" , "t":"u"}, {"id":"bb0215" , "fid":"frag_1" , "t":"u"}, {"id":"bb0230" , "fid":"frag_1" , "t":"u"}, {"id":"bb0240" , "fid":"frag_1" , "t":"u"}, {"id":"bb0245" , "fid":"frag_1" , "t":"u"}, {"id":"bb0050" , "fid":"frag_1" , "t":"u"}, {"id":"bb0060" , "fid":"frag_1" , "t":"u"}, {"id":"bb0065" , "fid":"frag_1" , "t":"u"}, {"id":"bb0100" , "fid":"frag_1" , "t":"u"}, {"id":"bb0105" , "fid":"frag_1" , "t":"u"}, {"id":"bb0110" , "fid":"frag_1" , "t":"u"}, {"id":"bb0145" , "fid":"frag_1" , "t":"u"}, {"id":"bb0165" , "fid":"frag_1" , "t":"u"}, {"id":"bb0185" , "fid":"frag_1" , "t":"u"}, {"id":"bb0205" , "fid":"frag_1" , "t":"u"}, {"id":"bb0225" , "fid":"frag_1" , "t":"u"}, {"id":"p0045" , "fid":"frag_2" , "t":"u"}, {"id":"bb0055" , "fid":"frag_2" , "t":"u"}, {"id":"ancbb0055" , "fid":"frag_2" , "t":"u"}, {"id":"bb0175" , "fid":"frag_2" , "t":"u"}, {"id":"ancbb0175" , "fid":"frag_2" , "t":"u"}, {"id":"bb0210" , "fid":"frag_2" , "t":"u"}, {"id":"ancbb0210" , "fid":"frag_2" , "t":"u"}, {"id":"bb0090" , "fid":"frag_2" , "t":"u"}, {"id":"bb0160" , "fid":"frag_2" , "t":"u"}, {"id":"bb0020" , "fid":"frag_2" , "t":"u"}, {"id":"bb0130" , "fid":"frag_2" , "t":"u"}, {"id":"bb0075" , "fid":"frag_2" , "t":"u"}, {"id":"bb0090" , "fid":"frag_2" , "t":"u"}, {"id":"bb0125" , "fid":"frag_2" , "t":"u"}, {"id":"bb0160" , "fid":"frag_2" , "t":"u"}, {"id":"p0050" , "fid":"frag_2" , "t":"u"}, {"id":"bb0020" , "fid":"frag_2" , "t":"u"}, {"id":"ancbb0020" , "fid":"frag_2" , "t":"u"}, {"id":"p0055" , "fid":"frag_2" , "t":"u"}, {"id":"bb0140" , "fid":"frag_2" , "t":"u"}, {"id":"ancbb0140" , "fid":"frag_2" , "t":"u"}, {"id":"p0060" , "fid":"frag_2" , "t":"u"}, {"id":"bb0230" , "fid":"frag_2" , "t":"u"}, {"id":"ancbb0230" , "fid":"frag_2" , "t":"u"}, {"id":"bb0230" , "fid":"frag_2" , "t":"u"}, {"id":"ancbb0230" , "fid":"frag_2" , "t":"u"}, {"id":"p0065" , "fid":"frag_2" , "t":"u"}, {"id":"bb0100" , "fid":"frag_2" , "t":"u"}, {"id":"ancbb0100" , "fid":"frag_2" , "t":"u"}, {"id":"bb0105" , "fid":"frag_2" , "t":"u"}, {"id":"ancbb0105" , "fid":"frag_2" , "t":"u"}, {"id":"p0070" , "fid":"frag_2" , "t":"u"}, {"id":"bb0185" , "fid":"frag_2" , "t":"u"}, {"id":"ancbb0185" , "fid":"frag_2" , "t":"u"}, {"id":"bb0225" , "fid":"frag_2" , "t":"u"}, {"id":"ancbb0225" , "fid":"frag_2" , "t":"u"}, {"id":"p0075" , "fid":"frag_2" , "t":"u"}, {"id":"bb0200" , "fid":"frag_2" , "t":"u"}, {"id":"ancbb0200" , "fid":"frag_2" , "t":"u"}, {"id":"p0080" , "fid":"frag_2" , "t":"u"}, {"id":"bb0235" , "fid":"frag_2" , "t":"u"}, {"id":"ancbb0235" , "fid":"frag_2" , "t":"u"}, {"id":"s0015" , "fid":"frag_2" , "t":"u"}, {"id":"p0085" , "fid":"frag_2" , "t":"u"}, {"id":"s0020" , "fid":"frag_2" , "t":"u"}, {"id":"p0090" , "fid":"frag_2" , "t":"u"}, {"id":"bt0005" , "fid":"frag_2" , "t":"u"}, {"id":"ancbt0005" , "fid":"frag_2" , "t":"u"}, {"id":"bs0025" , "fid":"frag_2" , "t":"u"}, {"id":"ancbs0025" , "fid":"frag_2" , "t":"u"}, {"id":"table_t0005" , "fid":"frag_2" , "t":"u"}, {"id":"t0005" , "fid":"frag_2" , "t":"t"}, {"id":"mmlsi16" , "fid":"frag_2" , "t":"u"}, {"id":"mmlsi17" , "fid":"frag_2" , "t":"u"}, {"id":"mmlsi18" , "fid":"frag_2" , "t":"u"}, {"id":"s0025" , "fid":"frag_2" , "t":"u"}, {"id":"p0095" , "fid":"frag_2" , "t":"u"}, {"id":"p0100" , "fid":"frag_3" , "t":"u"}, {"id":"e0005" , "fid":"frag_3" , "t":"u"}, {"id":"mmlsi1" , "fid":"frag_3" , "t":"u"}, {"id":"e0010" , "fid":"frag_3" , "t":"u"}, {"id":"mmlsi2" , "fid":"frag_3" , "t":"u"}, {"id":"e0015" , "fid":"frag_3" , "t":"u"}, {"id":"mmlsi3" , "fid":"frag_3" , "t":"u"}, {"id":"mmlsi4" , "fid":"frag_3" , "t":"u"}, {"id":"p0105" , "fid":"frag_3" , "t":"u"}, {"id":"be0005" , "fid":"frag_3" , "t":"u"}, {"id":"be0010" , "fid":"frag_3" , "t":"u"}, {"id":"be0015" , "fid":"frag_3" , "t":"u"}, {"id":"p0110" , "fid":"frag_3" , "t":"u"}, {"id":"bb0010" , "fid":"frag_3" , "t":"u"}, {"id":"bb0115" , "fid":"frag_3" , "t":"u"}, {"id":"bb0130" , "fid":"frag_3" , "t":"u"}, {"id":"bb0180" , "fid":"frag_3" , "t":"u"}, {"id":"bb0190" , "fid":"frag_3" , "t":"u"}, {"id":"bf0005" , "fid":"frag_3" , "t":"u"}, {"id":"ancbf0005" , "fid":"frag_3" , "t":"u"}, {"id":"bb0010" , "fid":"frag_3" , "t":"u"}, {"id":"bb0075" , "fid":"frag_3" , "t":"u"}, {"id":"bb0130" , "fid":"frag_3" , "t":"u"}, {"id":"bb0220" , "fid":"frag_3" , "t":"u"}, {"id":"bf0005" , "fid":"frag_3" , "t":"u"}, {"id":"ancbf0005" , "fid":"frag_3" , "t":"u"}, {"id":"bb0085" , "fid":"frag_3" , "t":"u"}, {"id":"bb0095" , "fid":"frag_3" , "t":"u"}, {"id":"bb0160" , "fid":"frag_3" , "t":"u"}, {"id":"bf0005" , "fid":"frag_3" , "t":"u"}, {"id":"ancbf0005" , "fid":"frag_3" , "t":"u"}, {"id":"figure_f0005" , "fid":"frag_3" , "t":"u"}, {"id":"f0005" , "fid":"frag_3" , "t":"f"}, {"id":"labelCaptionf0005" , "fid":"frag_3" , "t":"u"}, {"id":"sp0010" , "fid":"frag_3" , "t":"u"}, {"id":"p0115" , "fid":"frag_4" , "t":"u"}, {"id":"be0005" , "fid":"frag_4" , "t":"u"}, {"id":"be0010" , "fid":"frag_4" , "t":"u"}, {"id":"be0015" , "fid":"frag_4" , "t":"u"}, {"id":"be0020" , "fid":"frag_4" , "t":"u"}, {"id":"be0025" , "fid":"frag_4" , "t":"u"}, {"id":"be0030" , "fid":"frag_4" , "t":"u"}, {"id":"bfn1" , "fid":"frag_4" , "t":"u"}, {"id":"ancbfn1" , "fid":"frag_4" , "t":"u"}, {"id":"e0020" , "fid":"frag_4" , "t":"u"}, {"id":"mmlsi5" , "fid":"frag_4" , "t":"u"}, {"id":"e0025" , "fid":"frag_4" , "t":"u"}, {"id":"mmlsi6" , "fid":"frag_4" , "t":"u"}, {"id":"e0030" , "fid":"frag_4" , "t":"u"}, {"id":"mmlsi7" , "fid":"frag_4" , "t":"u"}, {"id":"e0035" , "fid":"frag_4" , "t":"u"}, {"id":"mmlsi8" , "fid":"frag_4" , "t":"u"}, {"id":"e0040" , "fid":"frag_4" , "t":"u"}, {"id":"mmlsi9" , "fid":"frag_4" , "t":"u"}, {"id":"e0045" , "fid":"frag_4" , "t":"u"}, {"id":"mmlsi10" , "fid":"frag_4" , "t":"u"}, {"id":"mmlsi11" , "fid":"frag_4" , "t":"u"}, {"id":"mmlsi12" , "fid":"frag_4" , "t":"u"}, {"id":"p0120" , "fid":"frag_5" , "t":"u"}, {"id":"bt0010" , "fid":"frag_5" , "t":"u"}, {"id":"ancbt0010" , "fid":"frag_5" , "t":"u"}, {"id":"bt0015" , "fid":"frag_5" , "t":"u"}, {"id":"ancbt0015" , "fid":"frag_5" , "t":"u"}, {"id":"be0010" , "fid":"frag_5" , "t":"u"}, {"id":"ancbe0010" , "fid":"frag_5" , "t":"u"}, {"id":"be0025" , "fid":"frag_5" , "t":"u"}, {"id":"be0040" , "fid":"frag_5" , "t":"u"}, {"id":"bt0020" , "fid":"frag_5" , "t":"u"}, {"id":"ancbt0020" , "fid":"frag_5" , "t":"u"}, {"id":"table_t0010" , "fid":"frag_5" , "t":"u"}, {"id":"t0010" , "fid":"frag_5" , "t":"t"}, {"id":"table_t0015" , "fid":"frag_5" , "t":"u"}, {"id":"t0015" , "fid":"frag_5" , "t":"t"}, {"id":"table_t0020" , "fid":"frag_5" , "t":"u"}, {"id":"t0020" , "fid":"frag_5" , "t":"t"}, {"id":"s0030" , "fid":"frag_5" , "t":"u"}, {"id":"p0125" , "fid":"frag_5" , "t":"u"}, {"id":"be0050" , "fid":"frag_5" , "t":"u"}, {"id":"ancbe0050" , "fid":"frag_5" , "t":"u"}, {"id":"e0050" , "fid":"frag_5" , "t":"u"}, {"id":"mmlsi13" , "fid":"frag_5" , "t":"u"}, {"id":"mmlsi14" , "fid":"frag_5" , "t":"u"}, {"id":"mmlsi15" , "fid":"frag_5" , "t":"u"}, {"id":"be0020" , "fid":"frag_5" , "t":"u"}, {"id":"be0025" , "fid":"frag_5" , "t":"u"}, {"id":"be0030" , "fid":"frag_5" , "t":"u"}, {"id":"p0130" , "fid":"frag_6" , "t":"u"}, {"id":"s0035" , "fid":"frag_6" , "t":"u"}, {"id":"p0135" , "fid":"frag_6" , "t":"u"}, {"id":"bs0015" , "fid":"frag_6" , "t":"u"}, {"id":"ancbs0015" , "fid":"frag_6" , "t":"u"}, {"id":"s0040" , "fid":"frag_6" , "t":"u"}, {"id":"p0140" , "fid":"frag_6" , "t":"u"}, {"id":"p0145" , "fid":"frag_6" , "t":"u"}, {"id":"p0150" , "fid":"frag_6" , "t":"u"}, {"id":"list_l0005" , "fid":"frag_6" , "t":"u"}, {"id":"p0205" , "fid":"frag_6" , "t":"u"}, {"id":"p0210" , "fid":"frag_6" , "t":"u"}, {"id":"p0215" , "fid":"frag_6" , "t":"u"}, {"id":"p0220" , "fid":"frag_6" , "t":"u"}, {"id":"p0155" , "fid":"frag_6" , "t":"u"}, {"id":"bb0010" , "fid":"frag_6" , "t":"u"}, {"id":"bb0035" , "fid":"frag_6" , "t":"u"}, {"id":"bb0045" , "fid":"frag_6" , "t":"u"}, {"id":"bb0070" , "fid":"frag_6" , "t":"u"}, {"id":"bb0085" , "fid":"frag_6" , "t":"u"}, {"id":"bb0115" , "fid":"frag_6" , "t":"u"}, {"id":"bb0135" , "fid":"frag_6" , "t":"u"}, {"id":"bb0160" , "fid":"frag_6" , "t":"u"}, {"id":"bb0180" , "fid":"frag_6" , "t":"u"}, {"id":"s0045" , "fid":"frag_6" , "t":"u"}, {"id":"p0160" , "fid":"frag_6" , "t":"u"}, {"id":"bf0010" , "fid":"frag_6" , "t":"u"}, {"id":"ancbf0010" , "fid":"frag_6" , "t":"u"}, {"id":"bf0010" , "fid":"frag_6" , "t":"u"}, {"id":"ancbf0010" , "fid":"frag_6" , "t":"u"}, {"id":"figure_f0010" , "fid":"frag_6" , "t":"u"}, {"id":"f0010" , "fid":"frag_6" , "t":"f"}, {"id":"labelCaptionf0010" , "fid":"frag_6" , "t":"u"}, {"id":"sp0015" , "fid":"frag_6" , "t":"u"}, {"id":"p0165" , "fid":"frag_6" , "t":"u"}, {"id":"p0170" , "fid":"frag_6" , "t":"u"}, {"id":"bf0015" , "fid":"frag_6" , "t":"u"}, {"id":"ancbf0015" , "fid":"frag_6" , "t":"u"}, {"id":"bb0230" , "fid":"frag_6" , "t":"u"}, {"id":"ancbb0230" , "fid":"frag_6" , "t":"u"}, {"id":"figure_f0015" , "fid":"frag_6" , "t":"u"}, {"id":"f0015" , "fid":"frag_6" , "t":"f"}, {"id":"labelCaptionf0015" , "fid":"frag_6" , "t":"u"}, {"id":"sp0020" , "fid":"frag_6" , "t":"u"}, {"id":"p0175" , "fid":"frag_6" , "t":"u"}, {"id":"bf0020" , "fid":"frag_6" , "t":"u"}, {"id":"ancbf0020" , "fid":"frag_6" , "t":"u"}, {"id":"figure_f0020" , "fid":"frag_6" , "t":"u"}, {"id":"f0020" , "fid":"frag_6" , "t":"f"}, {"id":"labelCaptionf0020" , "fid":"frag_6" , "t":"u"}, {"id":"sp0025" , "fid":"frag_6" , "t":"u"}, {"id":"p0180" , "fid":"frag_6" , "t":"u"}, {"id":"s0050" , "fid":"frag_6" , "t":"u"}, {"id":"p0185" , "fid":"frag_6" , "t":"u"}, {"id":"p0190" , "fid":"frag_6" , "t":"u"}, {"id":"p0195" , "fid":"frag_7" , "t":"u"}, {"id":"bb0230" , "fid":"frag_7" , "t":"u"}, {"id":"ancbb0230" , "fid":"frag_7" , "t":"u"}, {"id":"p0200" , "fid":"frag_7" , "t":"u"}, {"id":"bibl00bi0005" , "fid":"frag_7" , "t":"u"}, {"id":"b0005" , "fid":"frag_7" , "t":"r"}, {"id":"bibsbref1" , "fid":"frag_7" , "t":"u"}, {"id":"bibsbref1" , "fid":"frag_7" , "t":"u"}, {"id":"b0010" , "fid":"frag_7" , "t":"r"}, {"id":"bibsbref2" , "fid":"frag_7" , "t":"u"}, {"id":"bibsbref2" , "fid":"frag_7" , "t":"u"}, {"id":"b0015" , "fid":"frag_7" , "t":"r"}, {"id":"bibsbref3" , "fid":"frag_7" , "t":"u"}, {"id":"bibsbref3" , "fid":"frag_7" , "t":"u"}, {"id":"b0020" , "fid":"frag_7" , "t":"r"}, {"id":"bibsbref4" , "fid":"frag_7" , "t":"u"}, {"id":"bibsbref4" , "fid":"frag_7" , "t":"u"}, {"id":"b0025" , "fid":"frag_7" , "t":"r"}, {"id":"bibsbref5" , "fid":"frag_7" , "t":"u"}, {"id":"bibsbref5" , "fid":"frag_7" , "t":"u"}, {"id":"b0030" , "fid":"frag_7" , "t":"r"}, {"id":"bibsbref6" , "fid":"frag_7" , "t":"u"}, {"id":"bibsbref6" , "fid":"frag_7" , "t":"u"}, {"id":"b0035" , "fid":"frag_7" , "t":"r"}, {"id":"bibsbref7" , "fid":"frag_7" , "t":"u"}, {"id":"bibsbref7" , "fid":"frag_7" , "t":"u"}, {"id":"b0040" , "fid":"frag_7" , "t":"r"}, {"id":"bibsbref8" , "fid":"frag_7" , "t":"u"}, {"id":"bibsbref8" , "fid":"frag_7" , "t":"u"}, {"id":"b0045" , "fid":"frag_7" , "t":"r"}, {"id":"bibsbref9" , "fid":"frag_7" , "t":"u"}, {"id":"bibsbref9" , "fid":"frag_7" , "t":"u"}, {"id":"b0050" , "fid":"frag_7" , "t":"r"}, {"id":"bibsbref10" , "fid":"frag_7" , "t":"u"}, {"id":"bibsbref10" , "fid":"frag_7" , "t":"u"}, {"id":"b0055" , "fid":"frag_7" , "t":"r"}, {"id":"bibsbref11" , "fid":"frag_7" , "t":"u"}, {"id":"bibsbref11" , "fid":"frag_7" , "t":"u"}, {"id":"b0060" , "fid":"frag_7" , "t":"r"}, {"id":"bibsbref12" , "fid":"frag_7" , "t":"u"}, {"id":"bibsbref12" , "fid":"frag_7" , "t":"u"}, {"id":"b0065" , "fid":"frag_7" , "t":"r"}, {"id":"bibsbref13" , "fid":"frag_7" , "t":"u"}, {"id":"bibsbref13" , "fid":"frag_7" , "t":"u"}, {"id":"b0070" , "fid":"frag_7" , "t":"r"}, {"id":"bibsbref14" , "fid":"frag_7" , "t":"u"}, {"id":"bibsbref14" , "fid":"frag_7" , "t":"u"}, {"id":"b0075" , "fid":"frag_7" , "t":"r"}, {"id":"bibsbref15" , "fid":"frag_7" , "t":"u"}, {"id":"bibsbref15" , "fid":"frag_7" , "t":"u"}, {"id":"b0080" , "fid":"frag_7" , "t":"r"}, {"id":"bibsbref16" , "fid":"frag_7" , "t":"u"}, {"id":"bibsbref16" , "fid":"frag_7" , "t":"u"}, {"id":"b0085" , "fid":"frag_7" , "t":"r"}, {"id":"bibsbref17" , "fid":"frag_7" , "t":"u"}, {"id":"bibsbref17" , "fid":"frag_7" , "t":"u"}, {"id":"b0090" , "fid":"frag_7" , "t":"r"}, {"id":"bibsbref18" , "fid":"frag_7" , "t":"u"}, {"id":"bibsbref18" , "fid":"frag_7" , "t":"u"}, {"id":"b0095" , "fid":"frag_7" , "t":"r"}, {"id":"bibsbref19" , "fid":"frag_7" , "t":"u"}, {"id":"bibsbref19" , "fid":"frag_7" , "t":"u"}, {"id":"b0100" , "fid":"frag_7" , "t":"r"}, {"id":"bibsbref20" , "fid":"frag_7" , "t":"u"}, {"id":"bibsbref20" , "fid":"frag_7" , "t":"u"}, {"id":"b0105" , "fid":"frag_8" , "t":"r"}, {"id":"bibsbref21" , "fid":"frag_8" , "t":"u"}, {"id":"bibsbref21" , "fid":"frag_8" , "t":"u"}, {"id":"b0110" , "fid":"frag_8" , "t":"r"}, {"id":"bibsbref22" , "fid":"frag_8" , "t":"u"}, {"id":"bibsbref22" , "fid":"frag_8" , "t":"u"}, {"id":"b0115" , "fid":"frag_8" , "t":"r"}, {"id":"bibsbref23" , "fid":"frag_8" , "t":"u"}, {"id":"bibsbref23" , "fid":"frag_8" , "t":"u"}, {"id":"b0120" , "fid":"frag_8" , "t":"r"}, {"id":"bibsbref24" , "fid":"frag_8" , "t":"u"}, {"id":"bibsbref24" , "fid":"frag_8" , "t":"u"}, {"id":"b0125" , "fid":"frag_8" , "t":"r"}, {"id":"bibsbref25" , "fid":"frag_8" , "t":"u"}, {"id":"bibsbref25" , "fid":"frag_8" , "t":"u"}, {"id":"b0130" , "fid":"frag_8" , "t":"r"}, {"id":"bibsbref26" , "fid":"frag_8" , "t":"u"}, {"id":"bibsbref26" , "fid":"frag_8" , "t":"u"}, {"id":"b0135" , "fid":"frag_8" , "t":"r"}, {"id":"bibsbref27" , "fid":"frag_8" , "t":"u"}, {"id":"bibsbref27" , "fid":"frag_8" , "t":"u"}, {"id":"b0140" , "fid":"frag_8" , "t":"r"}, {"id":"bibsbref28" , "fid":"frag_8" , "t":"u"}, {"id":"bibsbref28" , "fid":"frag_8" , "t":"u"}, {"id":"b0145" , "fid":"frag_8" , "t":"r"}, {"id":"bibsbref29" , "fid":"frag_8" , "t":"u"}, {"id":"bibsbref29" , "fid":"frag_8" , "t":"u"}, {"id":"b0150" , "fid":"frag_8" , "t":"r"}, {"id":"bibsbref30" , "fid":"frag_8" , "t":"u"}, {"id":"bibsbref30" , "fid":"frag_8" , "t":"u"}, {"id":"b0155" , "fid":"frag_8" , "t":"r"}, {"id":"bibsbref31" , "fid":"frag_8" , "t":"u"}, {"id":"bibsbref31" , "fid":"frag_8" , "t":"u"}, {"id":"b0160" , "fid":"frag_8" , "t":"r"}, {"id":"bibsbref32" , "fid":"frag_8" , "t":"u"}, {"id":"bibsbref32" , "fid":"frag_8" , "t":"u"}, {"id":"b0165" , "fid":"frag_8" , "t":"r"}, {"id":"bibsbref33" , "fid":"frag_8" , "t":"u"}, {"id":"bibsbref33" , "fid":"frag_8" , "t":"u"}, {"id":"b0170" , "fid":"frag_8" , "t":"r"}, {"id":"bibsbref34" , "fid":"frag_8" , "t":"u"}, {"id":"bibsbref34" , "fid":"frag_8" , "t":"u"}, {"id":"b0175" , "fid":"frag_8" , "t":"r"}, {"id":"bibsbref35" , "fid":"frag_8" , "t":"u"}, {"id":"bibsbref35" , "fid":"frag_8" , "t":"u"}, {"id":"b0180" , "fid":"frag_8" , "t":"r"}, {"id":"bibsbref36" , "fid":"frag_8" , "t":"u"}, {"id":"bibsbref36" , "fid":"frag_8" , "t":"u"}, {"id":"b0185" , "fid":"frag_8" , "t":"r"}, {"id":"bibsbref37" , "fid":"frag_8" , "t":"u"}, {"id":"bibsbref37" , "fid":"frag_8" , "t":"u"}, {"id":"b0190" , "fid":"frag_8" , "t":"r"}, {"id":"bibsbref38" , "fid":"frag_8" , "t":"u"}, {"id":"bibsbref38" , "fid":"frag_8" , "t":"u"}, {"id":"b0195" , "fid":"frag_8" , "t":"r"}, {"id":"bibsbref39" , "fid":"frag_8" , "t":"u"}, {"id":"bibsbref39" , "fid":"frag_8" , "t":"u"}, {"id":"b0200" , "fid":"frag_8" , "t":"r"}, {"id":"bibsbref40" , "fid":"frag_8" , "t":"u"}, {"id":"bibsbref40" , "fid":"frag_8" , "t":"u"}, {"id":"b0205" , "fid":"frag_9" , "t":"r"}, {"id":"bibsbref41" , "fid":"frag_9" , "t":"u"}, {"id":"bibsbref41" , "fid":"frag_9" , "t":"u"}, {"id":"b0210" , "fid":"frag_9" , "t":"r"}, {"id":"bibsbref42" , "fid":"frag_9" , "t":"u"}, {"id":"bibsbref42" , "fid":"frag_9" , "t":"u"}, {"id":"b0215" , "fid":"frag_9" , "t":"r"}, {"id":"bibsbref43" , "fid":"frag_9" , "t":"u"}, {"id":"bibsbref43" , "fid":"frag_9" , "t":"u"}, {"id":"b0220" , "fid":"frag_9" , "t":"r"}, {"id":"bibsbref44" , "fid":"frag_9" , "t":"u"}, {"id":"bibsbref44" , "fid":"frag_9" , "t":"u"}, {"id":"b0225" , "fid":"frag_9" , "t":"r"}, {"id":"bibsbref45" , "fid":"frag_9" , "t":"u"}, {"id":"bibsbref45" , "fid":"frag_9" , "t":"u"}, {"id":"b0230" , "fid":"frag_9" , "t":"r"}, {"id":"bibsbref46" , "fid":"frag_9" , "t":"u"}, {"id":"bibsbref46" , "fid":"frag_9" , "t":"u"}, {"id":"b0235" , "fid":"frag_9" , "t":"r"}, {"id":"bibsbref47" , "fid":"frag_9" , "t":"u"}, {"id":"bibsbref47" , "fid":"frag_9" , "t":"u"}, {"id":"b0240" , "fid":"frag_9" , "t":"r"}, {"id":"bibsbref48" , "fid":"frag_9" , "t":"u"}, {"id":"bibsbref48" , "fid":"frag_9" , "t":"u"}, {"id":"b0245" , "fid":"frag_9" , "t":"r"}, {"id":"bibsbref49" , "fid":"frag_9" , "t":"u"}, {"id":"bibsbref49" , "fid":"frag_9" , "t":"u"}, {"id":"cor1" , "fid":"frag_9" , "t":"u"}, {"id":"fn1" , "fid":"frag_9" , "t":"n"}, {"id":"be0020" , "fid":"frag_9" , "t":"u"}, {"id":"be0025" , "fid":"frag_9" , "t":"u"}, {"id":"be0030" , "fid":"frag_9" , "t":"u"}] }';
+
+
+
+SDM.pf = new Object;
+SDM.pf.dc = new Object;
+SDM.pf.dc.retry = 10;
+SDM.pf.dc.retryDelay = 300;
+SDM.pf.dc.retryFactor = 1.0;
+
+SDM.pf.er = new Object;
+
+SDM.pf.er.epub = new Object;
+SDM.pf.er.epub.name = 'ePub';
+SDM.pf.er.epub.retry = 5;
+SDM.pf.er.epub.retryDelay = 2000;
+SDM.pf.er.epub.retryFactor = 1.0;
+SDM.pf.er.epub.msgDelay = 1500;
+SDM.pf.er.epub.msgType = 'rect';
+SDM.pf.er.epub.msgImg = 'epubAnim.gif';
+SDM.pf.er.epub.url='http://www.sciencedirect.com/science/ereader/epub/S0950705112002079/1368774445/09507051/1-s2.0-S0950705112002079/serial/?md5=3127880b42cef3cb4e6194d33bdf1bc7';
+
+
+SDM.pf.er.mobi = new Object;
+SDM.pf.er.mobi.name = 'Mobipocket';
+SDM.pf.er.mobi.retry = 5;
+SDM.pf.er.mobi.retryDelay = 2000;
+SDM.pf.er.mobi.retryFactor = 1.0;
+SDM.pf.er.mobi.msgDelay = 1500;
+SDM.pf.er.mobi.msgType = 'rect';
+SDM.pf.er.mobi.msgImg = 'mobiAnim.gif';
+SDM.pf.er.mobi.url='http://www.sciencedirect.com/science/ereader/mobi/S0950705112002079/1368774445/09507051/1-s2.0-S0950705112002079/serial/?md5=3127880b42cef3cb4e6194d33bdf1bc7';
+
+
+
+
+
+
+SDM.pm.toc=new Object;
+SDM.pm.toc.retry = 20;
+SDM.pm.toc.retryDelay = 1000;
+SDM.pm.toc.retryFactor = 1.09;
+ SDM.tocJson = '{"PII":"S0950705112002079","EID":"1-s2.0-S0950705112002079","TIMESTAMP":"2012-11-21T16:07:57.617515-05:00","TOC":[{"dummy": "dummy"}, {"sT":"Abstract", "sID":"section_abstract", "cT":[ {"sT":"", "sID":"absSec_1" } ] }, {"sT":"Keywords", "sID":"kwd_1"}, {"sT":"1. Introduction", "sID":"s0005", "faID":[ {"dummy": "dummy"} ] },{"sT":"2. Literature review", "sID":"s0010", "faID":[ {"dummy": "dummy"} ] },{"sT":"3. A proposed recommendation system", "sID":"s0015", "faID":[ {"dummy": "dummy"} ] , "cT":[ {"sT":"3.1. Notations", "sID":"s0020", "faID":[ {"dummy": "dummy"},{"fID":"t0005", "fT":"tbl","fL":"Table 1"} ] },{"sT":"3.2. New similarity function for selecting neighbors for each target item", "sID":"s0025", "faID":[ {"dummy": "dummy"}, {"fID":"f0005", "fT":"fig","fL":"Fig. 1", "fI":"gr1.sml","fIh":"60"},{"fID":"t0010", "fT":"tbl","fL":"Table 2"},{"fID":"t0015", "fT":"tbl","fL":"Table 3"},{"fID":"t0020", "fT":"tbl","fL":"Table 4"} ] },{"sT":"3.3. Predicting preference on target items", "sID":"s0030", "faID":[ {"dummy": "dummy"} ] } ]},{"sT":"4. Experiments", "sID":"s0035", "faID":[ {"dummy": "dummy"} ] , "cT":[ {"sT":"4.1. Experimental design", "sID":"s0040", "faID":[ {"dummy": "dummy"} ] },{"sT":"4.2. Experimental results and analysis", "sID":"s0045", "faID":[ {"dummy": "dummy"}, {"fID":"f0010", "fT":"fig","fL":"Fig. 2", "fI":"gr2.sml","fIh":"164"}, {"fID":"f0015", "fT":"fig","fL":"Fig. 3", "fI":"gr3.sml","fIh":"57"}, {"fID":"f0020", "fT":"fig","fL":"Fig. 4", "fI":"gr4.sml","fIh":"54"} ] } ]},{"sT":"5. Conclusions", "sID":"s0050", "faID":[ {"dummy": "dummy"} ] }, {"sT":"References", "sID":"bibl00bi0005"} , {"sT":"", "sID":"","faID":[ {"dummy": "dummy"} ] }]}';
+ SDM.tocCacheAvail=true; 
+
+
+SDM.ep=new Object;
+SDM.ep.imgBase = "http://cdn.els-cdn.com/sd";
+SDM.ep.urlPrefix = "http://www.sciencedirect.com/science";
+SDM.ep.refLinkURL = "http://www.sciencedirect.com/science/relLink/ajaxReq?_eid=1-s2.0-S0950705112002079";
+SDM.ep.updatedCitedBy = "http://www.sciencedirect.com/science/referenceResolution/ajaxRefResol?_updateCitedBy=";
+SDM.ep.refResolvePath = "http://www.sciencedirect.com/science/referenceResolution/ajaxRefResol?_eid=1-s2.0-S0950705112002079&_refCnt=49&_docType=article";
+SDM.breadCrumbPathURL = "http://www.sciencedirect.com/science/module/breadCrumbPaths/isbn//pii/S0950705112002079";
+
+SDM.ldrAvail = true;
+SDM.ep.crossMarkURL = "http://www.sciencedirect.com/science/crossMark";
+SDM.ep.crossMarkLib = "http://crossmark.crossref.org/javascripts/crossmark.min.js";
+SDM.ep.userActionURL = "http://www.sciencedirect.com/science/UserActions"
+SDM.ep.svShindigLib="http://sciverse-shindig.elsevier.com/gadgets/js/shindig-container:pubsub-2.js?c=1";
+SDM.ep.svSciverseLib="http://www.sciencedirect.com/gadgetservices/gadgets/v3_1/js/SciverseShindigService,GadgetToolBar,jquery-outside,jquery.ba-bbq.min,SciverseShindigContainer,ScienceDirectShindigServices.js";
+SDM.ep.downloadCsvURL = "http://services.elsevier.com/SDWebExport/export/table/csv";
+SDM.ep.downloadActionURL = "http://www.sciencedirect.com/science/downloadActions/keyEvent/S0950705112002079/09507051";
+SDM.ep.gigyaLib="//cdn.gigya.com/JS/socialize.js?apiKey=3__Bt7bHrGM8mjKPwBuOVjWyMi678aF6-PewcnoHJJ6UR1fS5t9NG9RBbKHjE0oA6J";
+
+SDM.urlPrefix = "http://www.sciencedirect.com/science";
+SDM.refLinkURL = "http://www.sciencedirect.com/science/relLink/ajaxReq?_eid=1-s2.0-S0950705112002079";
+
+SDM.imageUrlPrefix = "http://ars.els-cdn.com/content/image/";
+SDM.staticImageUrlPrefix = "http://cdn.els-cdn.com/sd";
+
+SDM.prodColor="sci_dir";if(SDM.prodColor=="sci_dir")SDM.prodColor="";
+
+SDM.pageTransKey = "05/17/2013 03:07:25 EDT#2846_005#43345#111.68.98.153";
+SDM.pageType = "article_full";
+
+  SDM.webUserId = "3415476";
+  SDM.contentType = "JL";
+  SDM.issn_or_isbn = "09507051";
+  SDM.sds = "6598c1ee488c0e50bd100d671cc2b261003886ed2b25d320b89bae354397e8db7624637ae97810197308f29fb6fb70bf";
+  SDM.tid = "6d44cfca-bec0-11e2-8dff-00000aacb35e";
+  SDM.ud = "3415476|<SAInfo><SAId>994</SAId><SAName>HEC - Higher Education Council Pakistan</SAName><SANum>S000000994</SANum></SAInfo>|C000060492|85933|IPRANGE";
+  SDM.pru = "http://pa.elsevier.com";
+  SDM.crossMarkURL = "http://www.sciencedirect.com/science/crossMark";
+  SDM.crossMarkLib = "http://crossmark.crossref.org/javascripts/crossmark.min.js";
+ SDM.isCrossMark=false; 
+  SDM.keOriginContentFamily = "serial"
+  SDM.userActionURL = "http://www.sciencedirect.com/science/UserActions"
+  SDM.sciverseUrlPfx="http://www.sciencedirect.com";
+  SDM.sciverseJsonObject='';
+  SDM.sciverseGadgetDetailsID = "efa37f4b-ea4a-474e-aa47-d2ce96b748e6";
+SDM.fullSize = true;
+SDM.outlineGraphics = true;
+SDM.outlineTab = "";
+SDM.outlineImgFence = true;
+SDM.entitled = true;
+SDM.urlTOCLink="http://www.sciencedirect.com/science/article/pii/S0950705112002079";
+SDM.urlTOCLinkQueryStr="?_rdoc=1&_fmt=full&_origin=&md5=22543fb95e34d36391c44b9d9cd72533";
+
+SDM.displayGadgets=true;
+SDM.euidCookieObject='a6097cda7c51ed21ec59fc548c221e16a166438fed6295b55eed5db9ab7a8b3842075db36f9e3676';
+SDM.adArticleLeftURL="/science/advertisement/left/num/169637/mainCat/general/cat/general/acct/82cb8c3803dc6146c2151258fc7b01e0/isn/09507051/doi/10.1016_j.knosys.2012.07.019/st/collaborative,filtering/page/article";
+SDM.adArticleOptionsURL="/science/advertisement/options/num/169637/mainCat/general/cat/general/acct/82cb8c3803dc6146c2151258fc7b01e0/isn/09507051/doi/10.1016_j.knosys.2012.07.019/st/collaborative,filtering/page/article";
+SDM.adArticleRightSmURL="/science/advertisement/rightsm/num/169637/mainCat/general/cat/general/acct/82cb8c3803dc6146c2151258fc7b01e0/isn/09507051/doi/10.1016_j.knosys.2012.07.019/st/collaborative,filtering/page/article";
+SDM.adArticleRightLgURL="/science/advertisement/rightlg/num/169637/mainCat/general/cat/general/acct/82cb8c3803dc6146c2151258fc7b01e0/isn/09507051/doi/10.1016_j.knosys.2012.07.019/st/collaborative,filtering/page/article";
+SDM.adReqOutline=true;
+SDM.adReqOptions=false;
+SDM.relatedRefAvail=true;
+SDM.mlktAvail = true;
+SDM.citedByScAvail = false;
+SDM.crawlerAvail = false;
+SDM.outwardLinks = '<div class="olLeftMiddle"><div class="boxLink"><a href="/science?_ob=RedirectURL&_method=outwardLink&_partnerName=19979&_eid=1-s2.0-S0950705112002079&_pii=S0950705112002079&_origin=article&_zone=rightPane&_targetURL=http%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS0950705112002079%3Fshowall%3Dtrue&_acct=C000060492&_version=1&_userid=3415476&md5=a6087cdde6cde52fd5da9f2dd51993af"  rel="nofollow" class="olSpawnWindow" target="outwardLink"><img src="http://www.sciencedirect.com/scidirimg/gw_rtn_ihub.gif" alt="Get Full Text Elsewhere" title="Get Full Text Elsewhere" border="0"></a></div></div><div class="tableFmDivider">&nbsp;</div><div class="olLeftMiddle"><div class="boxLink"><a href="/science?_ob=RedirectURL&_method=outwardLink&_partnerName=5978&_eid=1-s2.0-S0950705112002079&_pii=S0950705112002079&_origin=article&_zone=rightPane&_targetURL=http%3A%2F%2Flinkinghub.pangaea.de%2Felsevier%2FredirectToSupplement%2F10.1016%2Fj.knosys.2012.07.019&_acct=C000060492&_version=1&_userid=3415476&md5=140d2e344c61598b732b4a264b54e322"  rel="nofollow" class="olSpawnWindow" target="outwardLink"><img src="http://linkinghub.pangaea.de/elsevier/supplementBanner/10.1016/j.knosys.2012.07.019" alt="PANGAEA Supplementary Data" title="PANGAEA Supplementary Data" border="0"></a></div></div><div class="olLeftMiddle"><div class="boxLink SC_record"><a href="/science?_ob=RedirectURL&_method=outwardLink&_partnerName=655&_eid=1-s2.0-S0950705112002079&_pii=S0950705112002079&_origin=article&_zone=rightPane&_targetURL=http%3A%2F%2Fwww.scopus.com%2Finward%2Frecord.url%3Feid%3D2-s2.0-84870054259%26partnerID%3D10%26rel%3DR3.0.0%26md5%3D9ffc1d8871438431d98e7a5abc4d8434&_acct=C000060492&_version=1&_userid=3415476&md5=caee7f64a30c69b16a3799c69935db1f"  rel="nofollow" class="olSpawnWindow" target="outwardLink">View Record in Scopus</a></div></div>';
+   SDM.doi = '10.1016/j.knosys.2012.07.019'; 
+ SDM.isSpecialIssue=false; 
+ SDM.hubEid = '1-s2.0-S0950705112X00121'; 
+
+
+ SDM.relatedCitingPanelAvail = true; 
+ SDM.applicationsPanelAvail=true; 
+ SDM.rerunJson = '{%22citation%22%3A[{%20%20%20%22AIPTXT%22%20%3A%20%22%22,%20%20%20%22ARTTITLE%22%20%3A%20%22Cognitive-behavioral%20therapy%20and%20decision%20science%22,%20%20%20%22AUTHORS%22%20%3A%20%22Meaghan%20A.%20Leddy%20,%20Britta%20L.%20Anderson%20,%20Jay%20Schulkin%22,%20%20%20%22CID%22%20%3A%20%22271810%22,%20%20%20%22CONTENTSUBTYPE%22%20%3A%20%22%22,%20%20%20%22CONTENTTYPE%22%20%3A%20%22%22,%20%20%20%22COVERDT%22%20%3A%20%222013-12-31%22,%20%20%20%22DOCSUBTYPE%22%20%3A%20%22fla%22,%20%20%20%22DOI%22%20%3A%20%2210.1016%2Fj.newideapsych.2013.01.001%22,%20%20%20%22EDITION%22%20%3A%20%22%22,%20%20%20%22FUNDINGBODYID%22%20%3A%20%22%22,%20%20%20%22IMGKEY%22%20%3A%20%221-s2.0-S0732118X13X00029%22,%20%20%20%22INDEXTYPE%22%20%3A%20%22%22,%20%20%20%22ISBNNORM%22%20%3A%20%22%22,%20%20%20%22ISS%22%20%3A%20%22%22,%20%20%20%22ISSNNORM%22%20%3A%20%220732118X%22,%20%20%20%22LBL%22%20%3A%20%22Original%20Research%20Article%22,%20%20%20%22MARKERS%22%20%3A%20%22%22,%20%20%20%22PDFEID%22%20%3A%20%221-s2.0-S0732118X1300010X-main.pdf%22,%20%20%20%22PDFSIZE%22%20%3A%20%22233%20K%22,%20%20%20%22PG%22%20%3A%20%22Pages%20173–183%22,%20%20%20%22PII%22%20%3A%20%22S0732118X1300010X%22,%20%20%20%22PUBDT%22%20%3A%20%22December%202013%22,%20%20%20%22PUBTITLE%22%20%3A%20%22New%20Ideas%20in%20Psychology%22,%20%20%20%22PUBYR%22%20%3A%20%222013%22,%20%20%20%22SATSRCINFO%22%20%3A%20%22%22,%20%20%20%22SCEID%22%20%3A%20%221-s2.0-S0732118X1300010X%22,%20%20%20%22SDEID%22%20%3A%20%221-s2.0-S0732118X1300010X%22,%20%20%20%22SPAACDATE%22%20%3A%20%22%22,%20%20%20%22SPAACDELAY%22%20%3A%20%22%22,%20%20%20%22SPAACTYPE%22%20%3A%20%22%22,%20%20%20%22SRCTYPE%22%20%3A%20%22serial%22,%20%20%20%22STATUS%22%20%3A%20%22FULL-TEXT%22,%20%20%20%22STG%22%20%3A%20%22S250%22,%20%20%20%22VOL%22%20%3A%20%22%22,%20%20%20%22VOLISS%22%20%3A%20%22Volume%2031,%20Issue%203%22,%20%20%20%22WEBPDF%22%20%3A%20%221-s2.0-S0732118X1300010X-main.pdf%20|%20main.pdf%20|%20pdf%20|%20true%20|%20233868%20|%20MAIN%22,%22ARTURL%22%20%3A%20%22%2Fscience%2Farticle%2Fpii%2FS0732118X1300010X%22,%22PDFURL%22%20%3A%20%22%2Fscience%3F_ob%3DMiamiImageURL%26_cid%3D271810%26_user%3D3415476%26_pii%3DS0732118X1300010X%26_check%3Dy%26_origin%3Darticle%26_zone%3DrightPane%26_coverDate%3D2013-12-31%26_piiSuggestedFrom%3DS0732118X1300010X%26panel%3DciteRelatedArt%26wchp%3DdGLzVlt-zSkWb%26md5%3D76485c619cfc0020d79e67aa37301811%26pid%3D1-s2.0-S0732118X1300010X-main.pdf%20%22,%22QUERYSTRING%22%20%3A%20%22%3F_fmt%3Dhigh%26_rdoc%3D1%26_origin%3Darticle%26panel%3DciteRelatedArt%26_zone%3DrightPane%26md5%3Dcae86e7db83f71378147f15dfc7269bb%22},{%20%20%20%22AIPTXT%22%20%3A%20%22%22,%20%20%20%22ARTTITLE%22%20%3A%20%22Using%20online%20consumer%20reviews%20as%20a%20source%20for%20demographic%20recommendations%3A%20A%20case%20study%20using%20online%20travel%20reviews%22,%20%20%20%22AUTHORS%22%20%3A%20%22Nikolaos%20Korfiatis%20,%20Marios%20Poulos%22,%20%20%20%22CID%22%20%3A%20%22271506%22,%20%20%20%22CONTENTSUBTYPE%22%20%3A%20%22%22,%20%20%20%22CONTENTTYPE%22%20%3A%20%22%22,%20%20%20%22COVERDT%22%20%3A%20%222013-10-15%22,%20%20%20%22DOCSUBTYPE%22%20%3A%20%22fla%22,%20%20%20%22DOI%22%20%3A%20%2210.1016%2Fj.eswa.2013.03.046%22,%20%20%20%22EDITION%22%20%3A%20%22%22,%20%20%20%22FUNDINGBODYID%22%20%3A%20%22%22,%20%20%20%22IMGKEY%22%20%3A%20%221-s2.0-S0957417413X00107%22,%20%20%20%22INDEXTYPE%22%20%3A%20%22%22,%20%20%20%22ISBNNORM%22%20%3A%20%22%22,%20%20%20%22ISS%22%20%3A%20%22%22,%20%20%20%22ISSNNORM%22%20%3A%20%2209574174%22,%20%20%20%22LBL%22%20%3A%20%22Original%20Research%20Article%22,%20%20%20%22MARKERS%22%20%3A%20%22%22,%20%20%20%22PDFEID%22%20%3A%20%221-s2.0-S0957417413002340-main.pdf%22,%20%20%20%22PDFSIZE%22%20%3A%20%221893%20K%22,%20%20%20%22PG%22%20%3A%20%22Pages%205507–5515%22,%20%20%20%22PII%22%20%3A%20%22S0957417413002340%22,%20%20%20%22PUBDT%22%20%3A%20%2215%20October%202013%22,%20%20%20%22PUBTITLE%22%20%3A%20%22Expert%20Systems%20with%20Applications%22,%20%20%20%22PUBYR%22%20%3A%20%222013%22,%20%20%20%22SATSRCINFO%22%20%3A%20%22%22,%20%20%20%22SCEID%22%20%3A%20%221-s2.0-S0957417413002340%22,%20%20%20%22SDEID%22%20%3A%20%221-s2.0-S0957417413002340%22,%20%20%20%22SPAACDATE%22%20%3A%20%22%22,%20%20%20%22SPAACDELAY%22%20%3A%20%22%22,%20%20%20%22SPAACTYPE%22%20%3A%20%22%22,%20%20%20%22SRCTYPE%22%20%3A%20%22serial%22,%20%20%20%22STATUS%22%20%3A%20%22FULL-TEXT%22,%20%20%20%22STG%22%20%3A%20%22S250%22,%20%20%20%22VOL%22%20%3A%20%22%22,%20%20%20%22VOLISS%22%20%3A%20%22Volume%2040,%20Issue%2014%22,%20%20%20%22WEBPDF%22%20%3A%20%221-s2.0-S0957417413002340-main.pdf%20|%20main.pdf%20|%20pdf%20|%20true%20|%201893120%20|%20MAIN%22,%22ARTURL%22%20%3A%20%22%2Fscience%2Farticle%2Fpii%2FS0957417413002340%22,%22PDFURL%22%20%3A%20%22%2Fscience%3F_ob%3DMiamiImageURL%26_cid%3D271506%26_user%3D3415476%26_pii%3DS0957417413002340%26_check%3Dy%26_origin%3Darticle%26_zone%3DrightPane%26_coverDate%3D2013-10-15%26_piiSuggestedFrom%3DS0957417413002340%26panel%3DciteRelatedArt%26wchp%3DdGLzVlt-zSkWb%26md5%3D35afecdaecaa00921ba72db5f5d252b7%26pid%3D1-s2.0-S0957417413002340-main.pdf%20%22,%22QUERYSTRING%22%20%3A%20%22%3F_fmt%3Dhigh%26_rdoc%3D1%26_origin%3Darticle%26panel%3DciteRelatedArt%26_zone%3DrightPane%26md5%3Dcae86e7db83f71378147f15dfc7269bb%22},{%20%20%20%22AIPTXT%22%20%3A%20%22%22,%20%20%20%22ARTTITLE%22%20%3A%20%22Student%20teachers%27%20conceptions%20of%20technology%3A%20A%20metaphor%20analysis%22,%20%20%20%22AUTHORS%22%20%3A%20%22Mustafa%20Koc%22,%20%20%20%22CID%22%20%3A%20%22271849%22,%20%20%20%22CONTENTSUBTYPE%22%20%3A%20%22%22,%20%20%20%22CONTENTTYPE%22%20%3A%20%22%22,%20%20%20%22COVERDT%22%20%3A%20%222013-10-31%22,%20%20%20%22DOCSUBTYPE%22%20%3A%20%22fla%22,%20%20%20%22DOI%22%20%3A%20%2210.1016%2Fj.compedu.2013.04.024%22,%20%20%20%22EDITION%22%20%3A%20%22%22,%20%20%20%22FUNDINGBODYID%22%20%3A%20%22%22,%20%20%20%22IMGKEY%22%20%3A%20%221-s2.0-S0360131513X00065%22,%20%20%20%22INDEXTYPE%22%20%3A%20%22%22,%20%20%20%22ISBNNORM%22%20%3A%20%22%22,%20%20%20%22ISS%22%20%3A%20%22%22,%20%20%20%22ISSNNORM%22%20%3A%20%2203601315%22,%20%20%20%22LBL%22%20%3A%20%22Original%20Research%20Article%22,%20%20%20%22MARKERS%22%20%3A%20%22%22,%20%20%20%22PDFEID%22%20%3A%20%221-s2.0-S0360131513001176-main.pdf%22,%20%20%20%22PDFSIZE%22%20%3A%20%22208%20K%22,%20%20%20%22PG%22%20%3A%20%22Pages%201–8%22,%20%20%20%22PII%22%20%3A%20%22S0360131513001176%22,%20%20%20%22PUBDT%22%20%3A%20%22October%202013%22,%20%20%20%22PUBTITLE%22%20%3A%20%22Computers%20%26amp%3Bamp%3B%20Education%22,%20%20%20%22PUBYR%22%20%3A%20%222013%22,%20%20%20%22SATSRCINFO%22%20%3A%20%22%22,%20%20%20%22SCEID%22%20%3A%20%221-s2.0-S0360131513001176%22,%20%20%20%22SDEID%22%20%3A%20%221-s2.0-S0360131513001176%22,%20%20%20%22SPAACDATE%22%20%3A%20%22%22,%20%20%20%22SPAACDELAY%22%20%3A%20%22%22,%20%20%20%22SPAACTYPE%22%20%3A%20%22%22,%20%20%20%22SRCTYPE%22%20%3A%20%22serial%22,%20%20%20%22STATUS%22%20%3A%20%22FULL-TEXT%22,%20%20%20%22STG%22%20%3A%20%22S250%22,%20%20%20%22VOL%22%20%3A%20%22%22,%20%20%20%22VOLISS%22%20%3A%20%22Volume%2068%22,%20%20%20%22WEBPDF%22%20%3A%20%221-s2.0-S0360131513001176-main.pdf%20|%20main.pdf%20|%20pdf%20|%20true%20|%20208823%20|%20MAIN%22,%22ARTURL%22%20%3A%20%22%2Fscience%2Farticle%2Fpii%2FS0360131513001176%22,%22PDFURL%22%20%3A%20%22%2Fscience%3F_ob%3DMiamiImageURL%26_cid%3D271849%26_user%3D3415476%26_pii%3DS0360131513001176%26_check%3Dy%26_origin%3Darticle%26_zone%3DrightPane%26_coverDate%3D2013-10-31%26_piiSuggestedFrom%3DS0360131513001176%26panel%3DciteRelatedArt%26wchp%3DdGLzVlt-zSkWb%26md5%3D9d3fff28883beb14f05b10e103127223%26pid%3D1-s2.0-S0360131513001176-main.pdf%20%22,%22QUERYSTRING%22%20%3A%20%22%3F_fmt%3Dhigh%26_rdoc%3D1%26_origin%3Darticle%26panel%3DciteRelatedArt%26_zone%3DrightPane%26md5%3Dcae86e7db83f71378147f15dfc7269bb%22}],%20%22VIEW_MORE_URL%22%3A%20%22%2Fscience%3F_ob%3DRerunURL%26_method%3Dsubmit%26_searchStrId%3D-251116812%26_rerunOrigin%3Dscholar.google%26_count%3D%26_isCountNotDisplayed%3D%26_orig%3Darticle%26_zone%3DrightPane%26panel%3DciteRelatedArt%26_acct%3DC000060492%26_version%3D1%26_userid%3D3415476%26md5%3Dc759ddb3191c00f5426be9f60161ecab%22,%20%22TYPE%22%3A%20%226%22,%20%22HITCOUNT%22%3A%20%22694%22,%20%22MAX_ARTICLES_TO_DISPLAY%22%3A%20%223%22}'; 
+ SDM.rerunAvail=true; 
+ SDM.helpUrlDomain = "#";
+ SDM.permAndReprint='<div class="boxLink"><a href="/science?_ob=RedirectURL&_method=outwardLink&_partnerName=936&_eid=1-s2.0-S0950705112002079&_pii=S0950705112002079&_origin=article&_zone=art_page&_targetURL=https%3A%2F%2Fs100.copyright.com%2FAppDispatchServlet%3FpublisherName%3DELS%26contentID%3DS0950705112002079%26orderBeanReset%3Dtrue&_acct=C000060492&_version=1&_userid=3415476&md5=7406888fab1e424a367521e47aa7663d"  rel="nofollow" class="olSpawnWindow" target="outwardLink">Permissions & Reprints</a></div>'; 
+ SDM.ppvMsg=''; 
+
+SDM.ignoreForceAbst=false;
+ 
+SDM.blk_all_social_logins='Y';
+
+var googleAds = '';
+
+SDM.svapi = SVApi;
+
+</script>
+
+
+<script>
+
+initializeArticlePage();
+</script>
+
+
+
+<script>$(document).ready( ArticlePage.showLeftAd() );</script>
+
+
+
+
+
+
+
+
+<script>
+  prs.rt('body_end');
+  
+</script>
+
+</body></html>

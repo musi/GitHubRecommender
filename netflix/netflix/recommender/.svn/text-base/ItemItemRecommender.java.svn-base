@@ -1,0 +1,422 @@
+package netflix.recommender;
+
+/**
+ * This class uses the item-item similarity table to predict ratings by a 
+ * user on an unrated movie.
+ */
+//-Xms40m-Xmx512m 
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import netflix.algorithms.modelbased.itembased.DatabaseImpl;
+import netflix.algorithms.modelbased.writer.UserSimKeeper;
+import netflix.memreader.MemHelper;
+import netflix.utilities.IntDoublePair;
+import netflix.utilities.Pair;
+import netflix.utilities.Timer227;
+
+/************************************************************************************************************************/
+public class ItemItemRecommender extends AbstractRecommender
+/************************************************************************************************************************/
+{
+
+    private DatabaseImpl 	db;
+    private boolean 		method; 	//true for weighted sums, false for linear regression
+    BufferedWriter      	writeData[];	//for writing in file
+    private String      	myPath;
+    private MemHelper       myTrainingSet;
+    private UserSimKeeper   myStoredSim;
+    
+/************************************************************************************************************************/
+
+    //constructor sets up the database-access layer and determines which method will
+    //be used to make recommendations (weighted sums or linear regression)
+    
+    public ItemItemRecommender(String dbName, String rateName, String movieName, String userName,
+    							String simName, boolean weighted)    
+    {
+    //    db = new DatabaseImpl(dbName, rateName, movieName, userName, simName);    
+        this.method = weighted;
+        myPath ="C:\\Users\\Musi\\workspace\\MusiRecommender\\DataSets\\SML_ML\\Item based\\FiveFoldData\\Data2\\";
+//        myPath ="C:\\Users\\Musi\\workspace\\MusiRecommender\\DataSets\\SML_ML\\Item based\\FiveFoldData\\Data1\\";
+        
+       // myPath ="C:\\Users\\Musi\\workspace\\MusiRecommender\\DataSets\\ML_ML\\ItemBased\\FiveFoldData\\Data1\\";
+        
+        writeData= new BufferedWriter[5];		//as Max 5-Fold
+      
+        
+    }
+    
+/************************************************************************************************************************/
+ 
+    /**
+     * @author steinbel
+     * Implements the abstract method AbstractRecommender using whichever method was
+     * set by constructor.  (Discards the date information.)
+     * 
+     * @param uid - the user to predict the rating for
+     * @param mid - the movie the predict against
+     * @param date - the date the rating would be made (irrelevant)
+     * @return	the predicted rating for this user on this movie.
+     */
+    
+    public double recommend(int uid, int mid, String date) //called from abstract recommender    
+    {
+    	if (method)
+    		return weightedSum(mid, uid);		// weighted sum
+    	else
+    		return regression(mid, uid);		// linear regression
+    		
+    }
+    
+/************************************************************************************************************************/
+    /**
+     * @author steinbel
+     * Uses a weighted sum method to find a predicted integer rating
+     * from 1-5 for a user on an unrated movie.
+     * 
+     * @param movieID   The movie for which a rating should be predicted.
+     * @param userID    The active user for whom we make the prediction.
+     * @return the predicted rating for this user on this movie.
+     */
+
+    //so the idea is, similar items have already been computed, what u have to do is just to
+    //pick all the similar items (to the active item) and make their weighted averages
+    
+    private double weightedSum(int movieID, int userID)    
+    {    	
+        double sumTop		= 0;
+        double sumBottom	= 0;
+        double answer       = 0;
+        
+        // grab all similar movies and their similarities
+      //   ArrayList<IntDoublePair> idSimList = db.getSimilarMovies(movieID, true);   //from smilarity table
+         ArrayList<IntDoublePair> idSimList = myStoredSim.getSimilarMovies(movieID);  //from stored and deserialized object
+        
+        
+        //grab the ratings for all the similar movies the user has seen
+        double temp;
+        int dummy=0;
+    
+        //________________________________________________________
+        
+        // Formula: from item-based CF
+        // All sim movies (similarity * active user rating) / sum over all sim movies (similarity)
+       
+       // if(idSimList == null) System.out.println(" with null"); 
+        if(idSimList!= null)
+        {
+	        //for (IntDoublePair pair : idSimList)
+        	for (int i=0;i<idSimList.size();i++)
+	        {	
+	        	 IntDoublePair pair = (IntDoublePair)idSimList.get(i);
+	        	//  if (pair.b==-100) System.out.println(" database pairs: " +  pair.a + ", " + pair.b);
+	        	 //System.out.println(" mem pairs: " +  m.a + ", " + m.b);
+	            //temp = db.getRatingForUserAndMovie(userID, pair.a); //return simply the rating from ratings table
+	            temp = myTrainingSet.getRating(userID, pair.a);
+	            dummy++;
+	            //if the user hasn't rated this one, skip it
+	            if (temp!=-99)
+	            {
+	            	//calculate the weighted sums
+	            	sumTop += (temp * pair.b);			// Active user vote * sim factor (weight)
+	            	sumBottom += Math.abs(pair.b);		// K
+	            	System.out.println(" weights -->" + pair.b);
+	            }
+	        }
+        }//end of null condition check
+        
+        //if user didn't see any similar movies give avg rating for user
+        if (sumBottom == 0)
+        	//return db.getAverageRatingForUser(userID);
+        	return  myTrainingSet.getAverageRatingForUser(userID);
+        
+        answer = sumTop/sumBottom; 
+         if (answer<0) return myTrainingSet.getAverageRatingForUser(userID);
+         else return answer;
+    }
+    
+ /************************************************************************************************************************/
+ 
+    /**
+     * @author steinbel
+     * Uses a regression method to find a predicted integer rating
+     * from 1-5 for a user on an unrated movie.
+     * 
+     * @param movieID   The movie for which a rating should be predicted.
+     * @param userID    The active user for whom we make the prediction.
+     * @return  the predicted rating for this user on this movie.
+     */
+    
+    
+    //check its theory first
+    
+    private double regression(int movieID, int userID)    
+    {
+    	double predicted = -99;
+        int    approxRating;
+        double sumTop=0;
+        double sumBottom=0;
+
+    	//grab all similar movies and their similarities
+        ArrayList<IntDoublePair> sims = db.getSimilarMovies(movieID, true);
+    
+	    //for each similar movie the user has seen
+        for (IntDoublePair i : sims)        
+        {
+		    //use linear regression model to generate this user's rating for the sim movie
+	 	    approxRating = predictKnownRating(movieID, i.a, userID);
+       
+		    //use above result as rating, calculate the weighted sums
+            sumTop += (i.b * approxRating);
+            sumBottom += Math.abs(i.b);
+
+        }
+
+        predicted = sumTop/sumBottom;
+        return predicted;
+    }
+
+    
+ /************************************************************************************************************************/
+    /**
+     * @author steinbel
+     * Builds a linear regression model combining the rating vectors for both movies
+     * and using the userIDs as the independent variable.
+     * 
+     * @param movie1	The movie (id #) to use as an independent variable.
+     * @param movie2	The movie (id #) to use for a dependent variable
+     * @param userID	The user for whom the prediction on movie2 should be made.
+     *
+     * @return 	The predicted rating of the user on movie2.
+     */
+    // y = bX + m ( b= slope, m = y intercept)
+    // b = sum(x-x') sum(y-y')/[sum(x-x')^2]    ???
+    // m = y' - bx'
+    //
+    // movie, similar movie, userId
+    private int predictKnownRating(int movie1, int movie2, int userID)    
+    {
+    	int predicted = -99;
+
+    	//________________
+	    //build the model:
+    	//________________
+    	
+	    //grab the rating vector for movie1 in <user, rating> pairs
+        ArrayList<Pair> targetV = db.getRatingVector(movie1);
+	    
+        //grab the rating vector for movie2
+        ArrayList<Pair> simV = db.getRatingVector(movie2);
+        
+        //create one list of rating instances  (?????????????/)
+        for (Pair p : simV)
+        	targetV.add(p);
+
+       /* grab mean (avg) ratings for movies 1 and 2 and for the userID
+	    * calculate standard deviation for ratings at the same time for efficiency
+	    */
+        double meanRate = (db.getAverageRatingForMovie(movie1)
+                            + db.getAverageRatingForMovie(movie2))/2;
+        double meanUser = 0;
+        double sdRate = 0;
+        
+        for (Pair p : targetV)         
+        {
+        	meanUser += p.a;
+            sdRate += ( ((double)p.b - meanRate)*((double)p.b - meanRate) );
+        }
+        
+        meanUser /= (targetV.size()-1);
+        sdRate = Math.sqrt( sdRate/(targetV.size() - 1) );
+	    
+        //now find standard deviation for userIDs
+        double sdUser = 0;
+        
+        for (Pair p: targetV)
+        	sdUser += ( ((double)p.a - meanUser)*((double)p.a - meanUser) );
+        sdUser = Math.sqrt( sdUser/(targetV.size() - 1) );
+         
+	    //find correlation between user and rating
+        double r = 0;
+        
+        for (Pair p : targetV) 
+        	r += ( ((p.a - meanUser)/sdUser) * ((p.b - meanRate)/sdRate) );
+        r /= (targetV.size() - 1);
+
+        //calculate the coefficients
+        double c2 = r * (sdUser/sdRate);
+        double c1 = meanUser - c2*meanRate;
+
+        //TODO: calculate error for epsilon
+        
+	    //assemble formula and use model to predict rating for user on movie2
+        predicted = (int) Math.round(c1 + c2*movie2);
+        
+	    return predicted;
+    }	   
+    
+  /************************************************************************************************************************/
+    
+    public void open()    
+    {
+    	db.openConnection();
+    }
+    
+    /************************************************************************************************************************/
+    
+    public void close()    
+    {
+    	db.closeConnection();
+    }
+
+ /************************************************************************************************************************/
+    
+    public static void main (String[] args)    
+    {
+       ItemItemRecommender rec;
+       MemHelper h;
+       Timer227 time = new Timer227();
+       double rmse;
+    
+       
+       
+       /*
+       for (int i=1; i<6; i++)       
+       {
+           //pass parameters to open the databaseImpl object
+    	   rec = new ItemItemRecommender("movielens", "ratings", "movies", "u" + i + "users", 
+         		   "itemsim_adjcos_" + i, true);
+           
+           rec = new ItemItemRecommender("movielens", "sml_ratings", "sml_movies", 
+        		   						"sml_averages", 
+        		   						"sml_simC", true);
+          
+          
+         //open the connection with databaseImlp
+           rec.open();
+       
+           //open memHelper with test data file
+           h = new MemHelper("/home/steinbel/u" + i + "test.dat");
+           
+           System.out.println("Ready to start recommendations.");
+           time.resetTimer();
+           time.start();
+           
+           //this method is implemented in Abstract recommender and we pass a test memHelper object
+           rmse = rec.testWithMemHelper(h);
+           
+           time.stop();
+           System.out.println("test " + i + " took " + time.getTime() + " s with rmse " + rmse);
+           
+           rec.close();
+       }
+*/
+
+      for (int i=1; i<6; i++) //for five fold       
+       {
+    	     	  
+    	  System.out.println(" Currently at fold ="+ (i));
+    	  
+    	   //pass parameters to open the databaseImpl object    	   
+           rec = new ItemItemRecommender("movielens", "sml_ratings", "sml_movies", 
+        		   						 "sml_averages", 
+        		   						 "sml_SimFold"+(i), true); //every time, different sim table
+          
+          //create training set which is stored in memory (for fast processing), each time different
+           //SML
+             rec.myTrainingSet = new MemHelper (rec.myPath + "sml_trainSetStoredFold" + (i) + ".dat");         
+             rec.myStoredSim = UserSimKeeper.deserialize(rec.myPath + "\\StoredSimP\\SimFold" + (i)+ ".dat" );
+      
+             //ML
+   //        rec.myTrainingSet = new MemHelper (rec.myPath + "ml_trainSetStoredFold" + (i) + ".dat");         
+    //       rec.myStoredSim = UserSimKeeper.deserialize(rec.myPath + "\\StoredSimC\\SimFold" + (i)+ ".dat" );
+           //rec.myStoredSim = UserSimKeeper.deserialize(rec.myPath + "\\StoredSimP\\SimFold" + (i)+ ".dat" );
+           
+           
+           //open the connection with databaseImlp, result files
+           if(i==1)    {	//rec.open();
+           					rec.openFile(5);
+           			}
+           //open memHelper with test data file
+           //SML
+           h = new MemHelper(rec.myPath+ "sml_testSetStoredFold" + (i) + ".dat");
+          //ML
+         //  h = new MemHelper(rec.myPath+ "ml_testSetStoredFold" + (i) + ".dat");  
+           System.out.println("Ready to start recommendations.");
+           time.resetTimer();
+           time.start();
+           
+           //this method is implemented in Abstract recommender and we pass a test memHelper object
+           rmse = rec.testWithMemHelper(h);           
+           time.stop();
+           
+       	try {
+       		rec.writeData[i-1].write(rmse + "\t" + time.getTime());
+    		rec.writeData[i-1].newLine();
+    	   }
+    	catch (Exception E)
+         {
+       	  System.out.println("error writing the file pointer of rec");
+       	  //System.exit(1);
+         }
+    
+           System.out.println("test " + i + " took " + time.getTime() + " s with rmse " + rmse);
+           
+           if(i==5) {
+        	   			// rec.close();	 //at end we close connection
+    	   				rec.closeFile(5); //close result files
+           			}
+           
+           System.gc();
+        }//end of folds for   
+    }//end of main function
+
+//___________________________________________________________________________________________
+//File writing etc
+
+    public void openFile(int howManyFiles)    
+    {
+
+   	 try {
+
+   		 for(int i=0;i<5;i++)
+   		   writeData[i] = new BufferedWriter(new FileWriter(myPath + "Results\\Result" + (i+1)+ ".dat", true));
+   			
+   	   }
+        
+        catch (Exception E)
+        {
+      	  System.out.println("error opening the file pointer of rec");
+      	  System.exit(1);
+        }
+        
+        System.out.println("Rec File Created");
+    }
+    
+    //----------------------------
+    
+
+    public void closeFile(int howMany)    
+    {
+    
+   	 try {
+   		    for(int i=0;i<5;i++)
+   		 	    writeData[i].close();
+   		  }
+   	     
+        catch (Exception E)
+        {
+      	  System.out.println("error closing the roc file pointer");
+        }
+        
+    }
+    
+
+    
+    
+    
+    
+}
+		

@@ -1,0 +1,62 @@
+package netflix.algorithms.modelbased.itembased;
+
+import netflix.algorithms.modelbased.itembased.method.AdjCosineSimilarityMethod;
+import netflix.algorithms.modelbased.itembased.method.SimilarityMethod;
+import netflix.algorithms.modelbased.reader.DataReader;
+import netflix.algorithms.modelbased.reader.DataReaderFromDB;
+import netflix.algorithms.modelbased.writer.SimilarityWriter;
+import netflix.algorithms.modelbased.writer.SimilarityWriterToFile;
+
+/******************************************************************************************************/
+public class MovieLensDBItemBasedModelBuilder 
+/******************************************************************************************************/
+{
+   /**
+     * @param args
+     */
+	
+   public static void main(String[] args)    
+   {
+		String LocationToWriteFileC = "C:\\Users\\Musi\\workspace\\MusiRec\\DataSets\\SML_ML\\sml_sim_C";
+		String LocationToWriteFileP = "C:\\Users\\Musi\\workspace\\MusiRec\\DataSets\\SML_ML\\sml_sim_P";
+		
+        try        
+        {
+        	//DataReader
+        	DataReader movielensDataReader = new DataReaderFromDB(
+            								 new DatabaseImpl("movielens", 
+            								 "sml_ratings", "sml_movies", "sml_averages"));
+        
+           
+            //similarity writer
+            SimilarityWriter movielensSimWriter = 
+            	new SimilarityWriterToFile(	LocationToWriteFileC); //to a file 
+            
+            //similarity method
+            SimilarityMethod movielensSimAdjCosineMethod = 
+            	new AdjCosineSimilarityMethod(); //assign class object to interface 
+
+            
+            //itemBasedModelBuilder (Standalone class)
+            ItemBasedModelBuilder movielensModelBuilder = 
+            	new ItemBasedModelBuilder	(	movielensDataReader,
+            									movielensSimWriter, 
+            									movielensSimAdjCosineMethod);
+
+            
+            
+           //call method of the above created object
+            movielensModelBuilder.buildModel();		//this object has specified similarityMethods etc
+
+            
+            movielensDataReader.close();
+            movielensSimWriter.close();
+        }
+
+        catch(Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+}

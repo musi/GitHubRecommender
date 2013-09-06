@@ -1,0 +1,4 @@
+#!/bin/sh
+#PBS -l walltime=60:00:00,mem=4096mb
+module load jdk
+java -Xmx8192m -XX:-UsePerfData -classpath /home/mag5v07/workspace/MusiRecommender/netflix/algorithms/modelbased/svd/colt.jar:/home/mag5v07/Libraries/weka.jar:/home/mag5v07/Libraries/LibSVM/libsvm-2.91/java/libsvm.jar:/home/mag5v07/Libraries/weka-src.jar:/home/mag5v07/workspace/MusiRecommender/ netflix.weka.Classifiers.J48ByTextAttributes 

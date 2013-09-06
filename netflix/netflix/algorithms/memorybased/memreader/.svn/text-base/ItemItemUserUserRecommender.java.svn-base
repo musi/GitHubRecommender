@@ -1,0 +1,927 @@
+package netflix.algorithms.memorybased.memreader;
+
+/**
+ * This class uses the item-item similarity table to predict ratings by a 
+ * user on an unrated movie.
+ */
+
+//-Xms40m-Xmx512m 
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.util.ArrayList;
+
+import cern.colt.list.DoubleArrayList;
+import cern.colt.list.IntArrayList;
+import cern.colt.list.LongArrayList;
+import cern.colt.map.OpenIntDoubleHashMap;
+import netflix.algorithms.modelbased.itembased.DatabaseImpl;
+import netflix.algorithms.modelbased.reader.DataReader;
+import netflix.algorithms.modelbased.writer.UserSimKeeper;
+import netflix.memreader.MemHelper;
+import netflix.rmse.RMSECalculator;
+import netflix.utilities.IntDoublePair;
+import netflix.utilities.Pair;
+import netflix.utilities.Timer227;
+import netflix.utilities.Triple;
+
+/************************************************************************************************************************/
+public class ItemItemUserUserRecommender //extends AbstractRecommender
+/************************************************************************************************************************/
+{
+
+    private DatabaseImpl 	db;
+    private boolean 		method; 			//true for weighted sums, false for linear regression
+    BufferedWriter      	writeData[];		//for writing in file
+    BufferedWriter      	writeDemoData[];	//for writing in file
+    BufferedWriter      	writeRatingData[];	//for writing in file
+    BufferedWriter      	writeDemoAndRatingData[];	//for writing in file
+    BufferedWriter      	writeWeights;				//for weight writing in file
+       
+    private String      	myPath;		
+ 
+      
+    private UserSimKeeper   myStoredRSim;   //Rsim
+    private UserSimKeeper   myStoredDSim;	//DSim
+    private UserSimKeeper   myStoredFSim;	//FSim
+    private int             totalK;
+    private int 			incrementInK;  
+    private int             totalNegativeAnswers,totalNegativeAnswers1, totalNegativeAnswers2,totalNegativeAnswers3;
+    private int 			totalZeroAnswers, totalZeroAnswers1, totalZeroAnswers2, totalZeroAnswers3;
+    
+    String 	infoAbtComb;		//contain information abt the combination we have
+    
+    //RMSE
+    RMSECalculator rmse;
+    
+    //Filter and Weight
+    FilterAndWeight myUserBasedFilter;
+    
+    //Training and Test set
+    private MemHelper       myTrainingSet;
+    private MemHelper       myTestSet;
+    
+/************************************************************************************************************************/
+
+    /**
+	 *  constructor sets up the database-access layer and determines which method will
+	 *  be used to make recommendations (weighted sums or linear regression)
+	 * 
+	 */
+    
+    public ItemItemUserUserRecommender(String dbName, String rateName, String movieName,
+    									String userName, String simName, boolean weighted)    
+    {
+    //    db = new DatabaseImpl(dbName, rateName, movieName, userName, simName);    
+         this.method = weighted;
+        
+
+         //SML Data paths
+       //   myPath ="C:\\Users\\Musi\\workspace\\MusiRecommender\\DataSets\\SML_ML\\Item based\\FiveFoldData\\DataFD\\";
+         // myPath ="C:\\Users\\Musi\\workspace\\MusiRecommender\\DataSets\\SML_ML\\Item based\\FiveFoldData\\Data2\\";
+          
+
+        //ML data paths
+        myPath ="C:\\Users\\Musi\\workspace\\MusiRecommender\\DataSets\\ML_ML\\ItemBased\\FiveFoldData\\DataFD\\";
+       // myPath ="C:\\Users\\Musi\\workspace\\MusiRecommender\\DataSets\\ML_ML\\ItemBased\\FiveFoldData\\DataD\\";
+        
+        writeData 			     = new BufferedWriter[10];		
+        writeDemoData 			 = new BufferedWriter[10];		
+        writeRatingData 		 = new BufferedWriter[10];		
+        writeDemoAndRatingData 	 = new BufferedWriter[10];		
+        
+        totalK 				 = 80;
+        incrementInK	 	 = 10;
+        totalNegativeAnswers = totalNegativeAnswers1 = totalNegativeAnswers2 = totalNegativeAnswers3 =0; 							 // -ve corr cases
+        totalZeroAnswers =totalZeroAnswers1 = totalZeroAnswers2 = totalZeroAnswers3 = 0;     						 //active user has not rated any of the similar movies
+        infoAbtComb ="";
+        
+    }
+    
+/******************************************************************************************************/
+  /**
+   *  Recommend an item by combining user and item based 
+   */
+   
+    public double UserAndItemBased(int activeUser, int targetMovie, int howMuchNeighbours, int comb)
+    {
+  	     
+    	
+    	//-------------------------------------------------
+    	// FInd Similar User --> Neighbouring Users
+    	//-------------------------------------------------
+    	double sumTop			= 0;
+        double sumBottom		= 0;
+        double answer       	= 0;
+        
+  	    double currWeight, weightSum = 0, voteSum = 0, weightSumAbs = 0;
+        int uid;
+
+         LongArrayList users = myTrainingSet.getUsersWhoSawMovie(targetMovie);		//this should also be done in (total set - test set)                  
+         int limit = users.size();    
+                 
+         OpenIntDoubleHashMap uidToWeight = new  OpenIntDoubleHashMap();
+         IntArrayList myUsers     		  = new IntArrayList();
+         DoubleArrayList myUsersWeights   = new DoubleArrayList();
+         double currentWeight;
+         
+         //go through all users who saw the target movie, to find weights        
+         //get all weights
+         for (int i = 0; i < limit; i++)       
+         {
+      	    uid = MemHelper.parseUserOrMovie(users.getQuick(i));
+      	    currentWeight  = myUserBasedFilter.weight(activeUser, uid);
+      	  
+      	    //It is a temporary step to check, what happens if we find similar items by checking neighbouring info 
+      	    if (currentWeight >0)
+      	    uidToWeight.put(uid, currentWeight);      	      	    
+         }
+         
+         // My Weights: Sort the weight       
+         myUsers 			= uidToWeight.keys();
+         myUsersWeights 	= uidToWeight.values();
+         uidToWeight.pairsSortedByValue(myUsers, myUsersWeights);         
+         
+        //-------------------------------------------------
+     	// FInd Similar Items --> Neighbouring Items
+     	//-------------------------------------------------
+     	
+         //Movies seen by active user
+         LongArrayList moviesSeenByActiveUser = myTrainingSet.getMoviesSeenByUser(activeUser);
+            
+         // All similar item, define variables        
+         OpenIntDoubleHashMap itemIdToWeight = new  OpenIntDoubleHashMap();
+         IntArrayList myItems      		 	 = new IntArrayList();
+         DoubleArrayList myItemsWeights 	 = new DoubleArrayList();
+                  
+         //Get all movies seen by active user: store their rating 
+         int activeUserMovSize = moviesSeenByActiveUser.size();
+         for (int i=0;i<activeUserMovSize;i++)        
+         {
+         	int mid = MemHelper.parseUserOrMovie(moviesSeenByActiveUser.getQuick(i));        	
+         	currentWeight = findHybridSimilarity (targetMovie, mid,myUsers);		//target movie, movie we want to find similarity with
+         	
+         	if(currentWeight!=100)
+         		itemIdToWeight.put(mid, currentWeight);
+         }       
+         
+         // My Weights: Sort the weight
+         myItems 			= itemIdToWeight.keys();
+         myItemsWeights 	= itemIdToWeight.values();
+         itemIdToWeight.pairsSortedByValue(myItems, myItemsWeights);
+         int totalSimialrItems = myItems.size();  
+         
+         //---------------------------------------------------------------------------------------
+      	 // Now we have similar items (to the target item) and similar users (to the active user)
+         // 
+      	 //---------------------------------------------------------------------------------------
+         
+     
+    //---------------------------------------------------------------------------------------
+    // (1)
+    // Approach first: find similarity between items, over only those users, who are neighbours 
+    // of the active user (found after applying user-based CF)
+    //---------------------------------------------------------------------------------------
+         
+         // Go through total Similar items and return weighted sum /regression
+         for (int i = totalSimialrItems-1, myTotal=0; i >=0; i--, myTotal++)       
+         {    	   
+         		if(myTotal == howMuchNeighbours) break;	
+         		int itemId = myItems.get(i);       	
+         
+         	if(comb==0)
+         	{
+         		//simple
+         		currentWeight= myItemsWeights.get(i);
+             	double ActiveUserRating= myTrainingSet.getRating(activeUser, itemId);
+
+             	// Consider All Weights            	
+ 	           /*  	sumBottom+= Math.abs(currentWeight);
+ 	             	sumTop+= ActiveUserRating * currentWeight;*/
+ 
+ 	             // Taste Approach
+ 	             	sumBottom+= Math.abs(currentWeight+1);
+ 	             	sumTop+= ActiveUserRating * (currentWeight+1);
+ 	             	
+ /*	             // +ve Weights
+ 	             	if(currentWeight >0)
+ 	             	{
+ 		             	sumBottom+= Math.abs(currentWeight);
+ 		             	sumTop+= ActiveUserRating * currentWeight;
+ 	             	}
+ 	             	
+ */          }//end of if
+         }//end of for
+         
+         
+         	  //if user didn't see any similar movies give avg rating for user
+            if (sumBottom == 0)
+            	//return db.getAverageRatingForUser(userID);
+            	{
+            	    totalZeroAnswers1++;
+            	//	System.out.println(" bottonSum=0 -->" + sumBottom);
+            	//	return  myTrainingSet.getAverageRatingForUser(userID);        	
+            	    return  0; 		
+            	}
+            
+            answer = sumTop/sumBottom;
+            
+             if (answer<0) 
+            	 {
+            	     totalNegativeAnswers1++;
+            	 	// System.out.println(" answer<0 -->" + answer);
+            	 	// return myTrainingSet.getAverageRatingForUser(userID);
+            	 return 0;
+            	 
+            	 }
+            
+             else return answer;
+   
+    } //end of function
+
+ 
+/************************************************************************************************************************/
+    
+    /**
+     * Find similarity between two items
+     *  
+     */
+    //Triple= for each user who have rated both movies [rating1, rating2, user avg]
+    public double findSimilarity( int mid1, int mid2)    
+    {
+        ArrayList<Triple> commonUsers = myTrainingSet.getCommonUserRatAndAve(mid1, mid2);
+    
+        if (commonUsers.size() < 1) return  -100.0;	//just like threshold
+        double num = 0.0, den1 = 0.0, den2 = 0.0;
+        
+        for (Triple u : commonUsers)        
+        {
+            double diff1 = u.r1 - u.a;
+            double diff2 = u.r2 - u.a;
+    
+            if (!(u.r1 <=5 && u.r1>0)) System.out.println("r1 =" + (u.r1));
+            if (!(u.r2 <=5 && u.r2>0)) System.out.println("r2 =" + (u.r2));
+            
+            num += diff1 * diff2;
+            
+            den1 += diff1 * diff1;
+            den2 += diff2 * diff2;
+        }
+        
+        double den = Math.sqrt(den1) * Math.sqrt(den2);
+        
+                
+        if (den == 0.0) return 0.0;
+        
+      //  if(num/den <0) System.out.println("Less than zero sim =" + (num/den));
+      //  if(num/den >1.1) System.out.println("Greater than one sim =" + (num/den));
+        
+        return num / den;
+    }
+
+/************************************************************************************************************************/
+    /**
+     * Find similarity between two items, filtered by neighbours
+     *  
+     */
+
+    public double findHybridSimilarity( int mid1, int mid2, IntArrayList neighbours)    
+    {
+        ArrayList<Triple> commonUsers = myTrainingSet.getCommonUserRatAndAve(mid1, mid2, neighbours);
+    
+        if (commonUsers.size() < 1) return  -100.0;	//just like threshold
+        double num = 0.0, den1 = 0.0, den2 = 0.0;
+        
+        for (Triple u : commonUsers)        
+        {
+            double diff1 = u.r1 - u.a;
+            double diff2 = u.r2 - u.a;
+    
+            if (!(u.r1 <=5 && u.r1>0)) System.out.println("r1 =" + (u.r1));
+            if (!(u.r2 <=5 && u.r2>0)) System.out.println("r2 =" + (u.r2));
+            
+            num += diff1 * diff2;
+            
+            den1 += diff1 * diff1;
+            den2 += diff2 * diff2;
+        }
+        
+        double den = Math.sqrt(den1) * Math.sqrt(den2);
+        
+                
+        if (den == 0.0) return 0.0;
+        
+      //  if(num/den <0) System.out.println("Less than zero sim =" + (num/den));
+      //  if(num/den >1.1) System.out.println("Greater than one sim =" + (num/den));
+        
+        return num / den;
+    }
+
+    
+/************************************************************************************************************************/
+     
+      
+    /**
+     *  Recommend the target item to active user 
+     * @param uid - the user to predict the rating for
+     * @param mid - the movie the predict against
+     * @param date - the date the rating would be made (irrelevant)
+     * @return	the predicted rating for this user on this movie.
+     */
+
+    public double recommend(int uid, int mid,  int totalNeighbours, int comb) //called from above    
+    {
+    		//---------------
+    		//Item-Based CF
+			//---------------
+    	     
+    		// double resultItemBasedCF = weightedSum(mid, uid,totalNeighbours,  comb);    	
+    		
+    		
+    		//---------------
+    		//User-Based CF
+			//---------------
+    	
+    		//double resultUserBasedCF = myUserBasedFilter.recommendS(uid, mid, totalNeighbours, 1);
+    		
+    		//---------------
+    		// Hybrid
+			//---------------
+    	
+    		double resultUserItemBasedCF = UserAndItemBased(uid, mid, totalNeighbours, comb);    		
+    		
+    		
+    		
+    		// Check the corrsponsing answers 
+    		/*System.out.println("Item-Based Prediction = " +resultItemBasedCF);
+    		System.out.println("User-Based Prediction = " +resultUserBasedCF);
+    		System.out.println("Hybrid Prediction = " +resultUserItemBasedCF);
+    		System.out.println("Acttual Rating = " +myTestSet.getRating(uid, mid));    		
+    		System.out.println("Total items active user rated = " +myTrainingSet.getMoviesSeenByUser(uid).size());
+    		System.out.println("Total Users who saw this item= " +myTrainingSet.getUsersWhoSawMovie(mid).size());
+    		System.out.println("k ="+ totalNeighbours);
+    		System.out.println("-------------------------------------------------------------------------");
+    		*/
+    		
+    		return resultUserItemBasedCF;
+    		
+    		
+    	/*else
+    		return regression(mid, uid,totalUsers);					// linear regression
+    	 */    		
+    }
+ 
+ /************************************************************************************************************************/
+    
+    /**
+     * Find weightedSum of Item-Based CF
+     * @return item-based prediction
+     * 
+     */
+    private double weightedSum(int movieID, int userID, int NumberOfNeighbours, int comb)    
+    {    	
+        double sumTop			= 0;
+        double sumBottom		= 0;
+        double answer       	= 0;
+      
+
+        //Movies seen by active user
+        LongArrayList moviesSeenByActiveUser = myTrainingSet.getMoviesSeenByUser(userID);
+           
+        // All similar item, define variables        
+        OpenIntDoubleHashMap itemIdToWeight = new  OpenIntDoubleHashMap();
+        IntArrayList myItems      		 	= new IntArrayList();
+        DoubleArrayList myWeights 		 	= new DoubleArrayList();
+        double currentWeight;
+        
+        //Get all movies seen by active user: store their rating 
+        int activeUserMovSize = moviesSeenByActiveUser.size();
+        for (int i=0;i<activeUserMovSize;i++)        
+        {
+        	int mid = MemHelper.parseUserOrMovie(moviesSeenByActiveUser.getQuick(i));        	
+        	currentWeight = findSimilarity (movieID, mid);		//target movie, movie we want to find similarity with
+        	
+        	if(currentWeight!=100)
+        		itemIdToWeight.put(mid, currentWeight);
+        }       
+        
+        //Sort similar items, according to their weights
+        myItems 	= itemIdToWeight.keys();
+        myWeights 	= itemIdToWeight.values();
+        itemIdToWeight.pairsSortedByValue(myItems, myWeights);
+        int totalSimialrItems = myItems.size();
+
+        // Go through total Similar items and return weighted sum /regression
+        for (int i = totalSimialrItems-1, myTotal=0; i >=0; i--, myTotal++)       
+        {    	   
+        		if(myTotal == NumberOfNeighbours) break;	
+        		int itemId = myItems.get(i);       	
+        
+        	if(comb==0)
+        	{
+        		//simple
+        		currentWeight= myWeights.get(i);
+            	double ActiveUserRating= myTrainingSet.getRating(userID, itemId);
+
+            	// Consider All Weights            	
+	             	sumBottom+= Math.abs(currentWeight);
+	             	sumTop+= ActiveUserRating * currentWeight;
+/*
+	             // Taste Approach
+	             	sumBottom+= Math.abs(currentWeight+1);
+	             	sumTop+= ActiveUserRating * (currentWeight+1);
+	             	
+	             // +ve Weights
+	             	if(currentWeight >0)
+	             	{
+		             	sumBottom+= Math.abs(currentWeight);
+		             	sumTop+= ActiveUserRating * currentWeight;
+	             	}
+	             	
+*/          }//end of if
+        	
+        	
+        	else if(comb ==1)
+        	{
+        		
+    	    	 double approxRating = predictKnownRating(movieID, itemId, userID);	
+
+         		//simple
+         		currentWeight= myWeights.get(i);
+             	double ActiveUserRating= myTrainingSet.getRating(userID, itemId);
+
+             	// Consider All Weights            	
+ 	             	sumBottom+= Math.abs(currentWeight);
+ 	             	sumTop+= ActiveUserRating * currentWeight;
+ /*
+ 	             // Taste Approach
+ 	             	sumBottom+= Math.abs(currentWeight+1);
+ 	             	sumTop+= ActiveUserRating * (currentWeight+1);
+ 	             	
+ 	             // +ve Weights
+ 	             	if(currentWeight >0)
+ 	             	{
+ 		             	sumBottom+= Math.abs(currentWeight);
+ 		             	sumTop+= ActiveUserRating * currentWeight;
+ 	             	} 	             	
+*/        	
+    	    	 
+        		
+        	} //end of else if    	
+        	
+        	
+	     } //end of for
+        
+        
+   	
+        //if user didn't see any similar movies give avg rating for user
+        if (sumBottom == 0)
+        	//return db.getAverageRatingForUser(userID);
+        	{
+        	    totalZeroAnswers1++;
+        	//	System.out.println(" bottonSum=0 -->" + sumBottom);
+        	//	return  myTrainingSet.getAverageRatingForUser(userID);        	
+        	    return  0; 		//sparsity challenge (active user have not rated any similar movie)
+        	}
+        
+        answer = sumTop/sumBottom;
+        
+         if (answer<0) 
+        	 {
+        	     totalNegativeAnswers1++;
+        	 	// System.out.println(" answer<0 -->" + answer);
+        	 	// return myTrainingSet.getAverageRatingForUser(userID);
+        	 return 0;
+        	 
+        	 }
+        
+         else return answer;
+    }
+    
+
+/************************************************************************************************************************/
+    /**
+     * @author steinbel
+     * Uses a regression method to find a predicted integer rating
+     * from 1-5 for a user on an unrated movie.
+     * 
+     * @param movieID   The movie for which a rating should be predicted.
+     * @param userID    The active user for whom we make the prediction.
+     * @return  the predicted rating for this user on this movie.
+     */
+    
+    
+    
+    /**
+     * @author steinbel
+     * Builds a linear regression model combining the rating vectors for both movies
+     * and using the userIDs as the independent variable.
+     * 
+     * @param movie1	The movie (id #) to use as an independent variable.
+     * @param movie2	The movie (id #) to use for a dependent variable
+     * @param userID	The user for whom the prediction on movie2 should be made.
+     *
+     * @return 	The predicted rating of the user on movie2.
+     */
+
+    // y = bX + m ( b= slope, m = y intercept)
+    // b = sum(x-x') sum(y-y')/[sum(x-x')^2]    ???
+    // m = y' - bx'
+    //
+    // movie, similar movie, userId
+    
+    private double predictKnownRating(int movie1, int movie2, int userID)    
+    {
+    	double predicted = -99;
+
+    	//________________
+	    //build the model:
+    	//________________
+    	
+	    //grab the rating vector for movie1 in <user, rating> pairs
+        //ArrayList<Pair> targetV = db.getRatingVector(movie1);
+        ArrayList<Pair> targetV = myTrainingSet.getRatingVector(movie1);
+	    
+        //grab the rating vector for movie2
+        //ArrayList<Pair> simV = db.getRatingVector(movie2);
+        ArrayList<Pair> simV = myTrainingSet.getRatingVector(movie2);
+        
+        //create one list of rating instances  (?????????????/)
+        for (Pair p : simV)
+        	targetV.add(p);
+
+       /* grab mean (avg) ratings for movies 1 and 2 and for the userID
+	    * calculate standard deviation for ratings at the same time for efficiency
+	    */
+        double meanRate = (myTrainingSet.getAverageRatingForMovie(movie1)
+                            + myTrainingSet.getAverageRatingForMovie(movie2))/2;
+        double meanUser = 0;
+        double sdRate = 0;
+        
+        for (Pair p : targetV)         
+        {
+        	meanUser += p.d1;
+            sdRate += ( ((double)p.d2 - meanRate)*((double)p.d2 - meanRate) );
+        }        
+        meanUser /= (targetV.size()-1);
+        sdRate = Math.sqrt( sdRate/(targetV.size() - 1) );
+	    
+        //now find standard deviation for userIDs
+        double sdUser = 0;       
+        for (Pair p: targetV)
+        	sdUser += ( ((double)p.d1 - meanUser)*((double)p.d1 - meanUser) );
+        sdUser = Math.sqrt( sdUser/(targetV.size() - 1) );
+         
+        
+	    //find correlation between user and rating
+        double r = 0;        
+        for (Pair p : targetV) 
+        	r += ( ((p.d1 - meanUser)/sdUser) * ((p.d2 - meanRate)/sdRate) );
+        r /= (targetV.size() - 1);
+
+        //calculate the coefficients
+        double c2 = r * (sdUser/sdRate);
+        double c1 = meanUser - c2*meanRate;
+
+        //TODO: calculate error for epsilon
+        
+        double rat = myTrainingSet.getRating(userID, movie2);		//I think, it is wrong, if correct, what is use of using regrssion 
+        														//Means we are using the user's actual rating as well 
+        
+        if(rat ==-99) rat = myTrainingSet.getAverageRatingForMovie(movie2);
+	    //assemble formula and use model to predict rating for user on movie2
+        predicted = (int) Math.round(c1 + c2*rat);
+     
+       /*   
+        System.out.println("prediction ="+ predicted);
+        System.out.println("mean user ="+ meanUser);
+        System.out.println("sdUser ="+ sdUser);
+        System.out.println("meanRate ="+ meanRate);
+        System.out.println("sdRate ="+ sdRate);        
+        System.out.println("r ="+ r);
+        System.out.println("c1 ="+ c1);
+        System.out.println("c2 ="+ c2);*/
+        
+	    return predicted;
+    }	   
+    
+/************************************************************************************************************************/
+    
+    public void open()    
+    {
+    	db.openConnection();
+    }
+    
+ /************************************************************************************************************************/
+    
+    public void close()    
+    {
+    	db.closeConnection();
+    }
+
+ /************************************************************************************************************************/
+    
+    public static void main (String[] args)    
+    {
+       ItemItemUserUserRecommender 	rec;
+       MemHelper 					h;
+       Timer227 					time	= new Timer227();
+       double 						mae=0,rmse; 
+       
+
+       //------------------------------------------------------------ 
+       // Start Five Fold
+       //------------------------------------------------------------
+           
+      for (int i=1; i<6; i++) //for five fold       
+       {
+    	     	  
+    	  System.out.println(" Currently at fold ="+ (i));
+    	  
+    	   //pass parameters to open the databaseImpl object    	   
+           rec = new ItemItemUserUserRecommender("movielens", "sml_ratings", "sml_movies", 
+        		   						 "sml_averages", 
+        		   						 "sml_SimFold"+(i), true); //every time, different sim table            
+          //---------------------- 
+          //SML
+          //----------------------
+           
+          //create training set which is stored in memory (for fast processing), each time different         
+             rec.myTrainingSet = new MemHelper (rec.myPath + "sml_trainSetStoredFold" + (i) + ".dat");         
+           
+          // user-rating item sim (Pearson or Adjusted Cosine)
+             //rec.myStoredSim = UserSimKeeper.deserialize(rec.myRSimPath + "\\StoredSimP\\SimFold" + (i)+ ".dat" );
+             rec.myStoredRSim = UserSimKeeper.deserialize(rec.myPath + "\\StoredRCSim\\SimFold" + (i)+ ".dat" );
+      
+          // demo sim 
+             rec.myStoredDSim = UserSimKeeper.deserialize(rec.myPath + "\\StoredDSim\\SimFold" + (i)+ ".dat" );
+             
+          //Feature Sim
+             rec.myStoredFSim = UserSimKeeper.deserialize(rec.myPath + "\\StoredFSim\\SimFold" + (i)+ ".dat" );
+             
+          //MemHelper test set
+             rec.myTestSet = new MemHelper(rec.myPath+ "sml_testSetStoredFold" + (i) + ".dat");
+        
+          //User based Filter setting
+            rec.myUserBasedFilter = new FilterAndWeight(rec.myTrainingSet,1); //with mmh object
+             
+            
+          //-----------------------
+          //Open File To write
+          //-----------------------
+             
+           //open the connection with databaseImlp, result files
+           if(i==1)    {	
+           				//	  rec.openFile(5, 2);  //demo
+           				//	  rec.openFile(5, 3);  //rating
+           				//	  rec.openFile(5, 4);  //both
+           					  rec.openSingleFile();
+           			   }
+          
+
+           //-----------------------
+           //Timers
+           //-----------------------
+           
+           System.out.println("Ready to start recommendations.");
+           time.resetTimer();
+           time.start();
+           
+
+           //---------------------------
+           // Go throug all Neighbours
+           //---------------------------    
+           
+       //we have to make loop here
+        for (int myK=2;myK<rec.totalK;myK+=rec.incrementInK)    
+         {
+              				
+        	for(int comb =0; comb<1;comb++)
+        	{
+           	 
+        		mae = rec.GoTroughTestSet(rec.myTestSet,myK,comb,0,0,0);			 
+           	 	time.stop(); 		
+	
+				    
+				    	System.out.println(rec.infoAbtComb);
+				    	System.out.println(" mae " + mae + ", with k =" + myK +
+						    		", -ve answers =" + rec.totalNegativeAnswers +
+						    		", zero answers =" + rec.totalZeroAnswers);
+				    	System.out.println("sensitivity =" + rec.rmse.getSensitivity() + ", Coverage ="+ rec.rmse.getItemCoverage());
+				    			
+				            	
+				    	rec.totalNegativeAnswers=0; 
+				      	rec.totalZeroAnswers=0;
+            		  
+        	} //end of inner for  
+    }//end of K for  
+        
+   }//end of folds for 
+      
+      //-------------------------------------
+      
+      
+    }//end of main function
+
+ /************************************************************************************************************************/
+ 
+    /**
+     * @param Memhelper Object, How much Neighbours
+     * @return MAE
+     */
+    
+    public double GoTroughTestSet(MemHelper testmh, int myNeighbours, int comb, double rW, double dW, double fW)     
+    {
+        rmse = new RMSECalculator();
+        
+        IntArrayList users;
+		LongArrayList movies;
+        String blank = "";
+        int uid, mid, total=0;
+        int totalUsers=0;
+        
+        // For each user, make recommendations
+        users		 = testmh.getListOfUsers();
+        totalUsers   = users.size(); 
+                
+        //-----------------------
+        // All test users
+        //-----------------------
+        
+           for (int i = 0; i < totalUsers; i++)                                
+            {
+            	uid = users.getQuick(i);       
+                movies = testmh.getMoviesSeenByUser(uid);
+                double myRating=0.0;                
+            	total++;         
+           
+           // if(movies.size()>=20)
+            {
+            	//-----------------------
+                // Movies seen by a user
+                //-----------------------
+                
+                for (int j = 0; j < movies.size(); j++)     
+                {
+                  mid = MemHelper.parseUserOrMovie(movies.getQuick(j));   
+                  
+                  double rrr = recommend  (uid,
+                		  				   mid,
+                		  				   myNeighbours,
+                		  				   comb 
+                  						 );
+                
+                  //-----------------------
+                  // Add error
+                  //-----------------------
+                   
+                  //System.out.println("  uid, mid, ratingP, ratingA" + uid + "," + mid + ","+ rrr +","+ myRating);
+                  
+                 // if(rrr!=0) //challenge sparsity (Active user has not rated any similar movie)
+                  
+                /*  if(rrr<0) rrr=0;
+                  if(rrr>5) rrr=5;
+                */  
+                
+                //  if(!(rrr>0 || rrr<=0)) System.out.println("rrr error= "+rrr);
+                 //  else System.out.println("rrr ok= "+rrr);
+                  
+                // if(rrr>0 )
+                  {               	
+                			myRating = testmh.getRating(uid, mid);			 		// get actual ratings?
+
+                            if (myRating==-99 )                           
+                               System.out.println(" rating error, uid, mid, ratingP" + uid + "," + mid + ","+ myRating);
+                           
+                            rmse.add(myRating,rrr);		   							 // get prediction for these users ....from where it is calling it?
+                            rmse.addCoverage(rrr);
+                            rmse.ROC4(myRating, rrr, 5);
+                           /* System.out.println("=====================================================");
+                            System.out.println(" error is = (actual - predicted=" + myRating + "-" + rrr);
+                            System.out.println("=====================================================");
+                                */
+                   }
+                }//end of all movies for
+            }//filter >20 movies 
+            }//end of all users for
+        
+
+       //System.out.println(", total =" + total);
+        //  double dd= rmse.rmse();
+        double dd= rmse.mae();
+      
+        return dd;
+    }
+    
+/*****************************************************************************************************/
+    
+//File writing etc
+
+    public void openFile(int howManyFiles, int which)    
+    {
+
+     
+   	 try {
+
+   		 for(int i=0;i<5;i++)
+   		 { 
+   			if(which==1)  //general
+   				writeData[i] = new BufferedWriter(new FileWriter(myPath + "Results\\ResultG" + (i+1)+ ".dat", true));
+   			
+   			else if (which==2) //demo
+   				writeDemoData[i] = new BufferedWriter(new FileWriter(myPath + "Results\\ResultD" + (i+1)+ ".dat", true));
+   		
+   			else if (which==3) //rating
+   				writeRatingData[i] = new BufferedWriter(new FileWriter(myPath + "Results\\ResultR" + (i+1)+ ".dat", true));
+   		
+   			else  //demo and rating both
+   				writeDemoAndRatingData[i] = new BufferedWriter(new FileWriter(myPath + "Results\\ResultDR" + (i+1)+ ".dat", true));
+   		 
+   		 
+   		 }
+   			
+   	   }
+        
+        catch (Exception E)
+        {
+      	  System.out.println("error opening the file pointer of rec");
+      	  System.exit(1);
+        }
+        
+        System.out.println("Rec File Created");
+    }
+    
+    //----------------------------
+    
+
+    public void closeFile(int howMany, int which)    
+    {
+    
+   	 try {
+   		    for(int i=0;i<5;i++)
+   		    	
+   		 	    {
+   		    	
+   		    	if (which==1)
+   		    		writeData[i].close();
+   		    	
+   		    	else if (which==1)
+   		    		writeDemoData[i].close();
+   		    	
+   		    	else if (which==1)
+   		    		writeRatingData[i].close();
+   		    	
+   		    	else
+   		    		writeDemoAndRatingData[i].close();
+   		 	    
+   		 	    }
+   		  }
+   	     
+        catch (Exception E)
+        {
+      	  System.out.println("error closing the roc file pointer");
+        }
+        
+    }
+    
+//--------------------------------------------------------
+    
+    public void openSingleFile()    
+    {
+    
+   	 try {	 
+   		writeWeights = new BufferedWriter(new FileWriter(myPath + "Results\\Weights.dat" , true));
+
+   			
+   	   }
+        
+        catch (Exception E)
+        {
+      	  System.out.println("error opening the file pointer of rec");
+      	  System.exit(1);
+        }
+        
+        System.out.println("Rec File Created");
+    }
+    
+    //------------------------------------
+    
+    public void closeSingleFile()    
+    {
+    
+   	 try {
+   		    writeWeights.close();
+   		 	    
+   	 	}
+   	 
+        catch (Exception E)
+        {
+      	  System.out.println("error closing the roc file pointer");
+        }
+        
+    }
+    
+    
+    
+}
+		

@@ -1,0 +1,217 @@
+package netflix.recommender;
+
+import java.io.*;
+import java.util.*;
+import netflix.memreader.*;
+import netflix.utilities.*;
+import cern.colt.matrix.*;
+import cern.colt.matrix.linalg.*;
+import cern.colt.matrix.impl.*;
+import cern.colt.function.*;
+
+
+/**
+ * Recommends movies using the SVD-based technique 
+ * described by Sarwar et. al. in "Application of 
+ * Dimensionality Reduction in Recommender Systems -
+ * A Case Study"
+ *
+ * Note that this class does not implement the resort() 
+ * method in AbstractRecommender. Since the SVD is 
+ * precomputed, new users cannot be added to the system.
+ *
+ * @author sowellb
+ */
+
+/****************************************************************************************************/
+public class SVDRecommender extends AbstractRecommender 
+/****************************************************************************************************/
+{
+
+    private SingularValueDecomposition 	svd;
+    private DoubleMatrix2D 				P;
+    private int 						k;
+    String  							myPath;
+    int 								totalNegSVDPred;
+    int 								totalPosSVDPred;
+    int 								totalZeroSVDPred;
+    
+/****************************************************************************************************/
+    
+    /**
+     * Constructor. 
+     *
+     * @param  memReaderFile  File containing serialized MemReader.
+     * @param  svdFile  File containing serialized SVD.
+     * @param  k  Number of singular values to use.
+     */
+
+    public SVDRecommender(String memReaderFile, String svdFile, int k) 
+    {
+    	  this(new MemHelper(memReaderFile), svdFile, k);
+    }
+
+ /****************************************************************************************************/
+    
+    /**
+     * Constructor. 
+     *
+     * @param  mh  		MemHelper object for training set. 
+     * @param  svdFile  File containing serialized SVD.
+     * @param  k 		Number of singular values to use.
+     */
+    public SVDRecommender(MemHelper mh, String svdFile, int k) 
+    {
+    	myPath ="C:\\Users\\Musi\\workspace\\MusiRecommender\\DataSets\\SML_ML\\SVD\\";
+    	
+        try 
+        {
+            this.k  = k;
+            this.mh = mh;
+
+            //Read SVD
+            FileInputStream fis  = new FileInputStream(svdFile);
+            ObjectInputStream in = new ObjectInputStream(fis);
+            svd 				 = (SingularValueDecomposition) in.readObject();
+            totalNegSVDPred		 = 0;
+            totalPosSVDPred		 = 0;
+            totalZeroSVDPred	 = 0;
+            
+            buildModel();
+         }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+/****************************************************************************************************/
+    
+    /**
+     * Computes the recommendation matrix from the 
+     * SVD. See the paper "Application of Dimensionality
+     * Reduction in Recommender Systems - A Case Study"
+     * for more information. 
+     */
+
+    private void buildModel() 
+    {
+            Algebra alg = new Algebra();
+
+            DoubleMatrix2D rootSk = svd.getS().viewPart(0, 0, k, k);
+                  
+            //compute singular value
+            for(int i = 0; i < k; i++) 
+            {
+              rootSk.set(i,i,Math.sqrt(rootSk.get(i,i)));  //Sets the matrix cell at coordinate [row,column] to the specified value. 
+            }
+
+    /*        // Compute U and V'
+            DoubleMatrix2D U  = svd.getU();	// As we have rows>cols in svd matrix, so it should contain movies????
+            DoubleMatrix2D Uk = U.viewPart(0, 0, U.rows(), k).copy(); // (int row, int column, int height, int width) 
+
+            DoubleMatrix2D VPrime  = alg.transpose(svd.getV());
+            DoubleMatrix2D VPrimek = VPrime.viewPart(0, 0, k, VPrime.columns()).copy();
+
+            //compute left and right by multiplying US, and SV'
+            DoubleMatrix2D left  = alg.mult(Uk, rootSk);
+            DoubleMatrix2D right = alg.mult(rootSk, VPrimek);
+
+            // Multiply [(US)(SV')]
+            P = alg.mult(left, right);
+            */
+            //We then multiplied the matrices UkSk1/2 and Sk1/2V'k  producing a 943 x 1682 matrix, P.
+            // No it shuld be 1682 x 943?
+            
+            //----------------------------------------------------------------------------------------
+            // AS it was requirement of colt to rows>cols, so in the rows we have movies now. Behaviour
+            // of U and V should be changed
+            
+            // Compute U and V'
+            DoubleMatrix2D U  = svd.getU();	
+            DoubleMatrix2D Uk = U.viewPart(0, 0, U.rows(), k).copy(); // (int row, int column, int height, int width) 
+
+            DoubleMatrix2D VPrime = alg.transpose(svd.getV());
+            DoubleMatrix2D VPrimek = VPrime.viewPart(0, 0, k, VPrime.columns()).copy();
+            DoubleMatrix2D rootSkPrime = alg.transpose(rootSk);
+            
+            //compute left and right by multiplying US, and SV'           
+           // DoubleMatrix2D left  = alg.mult(Uk, rootSkPrime);
+            DoubleMatrix2D left  = alg.mult(Uk, rootSk);
+            DoubleMatrix2D right = alg.mult(rootSk, VPrimek);
+
+            // Multiply [(US)(SV')]
+            P = alg.mult(left, right);
+            
+            
+    }
+
+/****************************************************************************************************/
+    
+    /**
+     * Predicts the rating that activeUser will give targetMovie.
+     *
+     * @param  activeUser  The user.
+     * @param  targetMovie  The movie.
+     * @param  date  The date the rating was given. 
+     * @return The rating we predict activeUser will give to targetMovie. 
+     */
+    public double recommend(int activeUser, int targetMovie, String date) 
+    {
+    	double entry=0;
+    	double prediction =0;
+    	
+        if ( activeUser<943 && targetMovie <1682)
+        {
+        	// Entry is retrieved in the correct way, i.e. rows x cols = movs x users
+        	   entry = P.get(targetMovie, activeUser);
+        	
+        	 
+        	 double avg = mh.getAverageRatingForUser(activeUser);
+        	 prediction = entry + avg;
+        	// prediction = entry;
+        	 
+        	 if(entry <0) totalNegSVDPred ++;
+        	 if(entry >0) totalPosSVDPred ++;
+        	 if(entry == 0) totalZeroSVDPred ++;
+        		// System.out.println("entry + avg = pred-->"+ entry + " + "+ avg + "=" + prediction);
+        }	
+        
+   /*     if(prediction < 1)
+            return 1;
+        else if(prediction > 5)
+            return 5;
+        else
+            return prediction;*/
+        
+        return prediction;
+    }
+
+    
+    /**
+     * Tests this method and computes rmse.
+     */
+    
+    public static void main(String[] args) 
+    {
+    	String path ="C:\\Users\\Musi\\workspace\\MusiRecommender\\DataSets\\SML_ML\\SVD\\";
+        
+    	//String base = "/Users/bsowell/recommender/movielens/0indexed/uabase.dat";
+        //String test = "/Users/bsowell/recommender/movielens/0indexed/uatest.dat";
+        
+    	String test = path + "sml_clusteringTestSetStoredTF.dat";
+    	String base = path + "sml_clusteringTrainSetStoredTF.dat";
+    	String svdFile = path + "SVDStored.dat";
+        System.out.println("Training set: " + base + ", test set: " + test);
+       
+       
+        for(int i=5;i<40;i++)
+        {
+	        SVDRecommender svdRec = new SVDRecommender(base, svdFile, i);
+	        MemHelper mhTest = new MemHelper(test);
+	        System.out.println("MAE: " + svdRec.testWithMemHelper(mhTest));
+	        System.out.println("Total SVD pred <0 = " + svdRec.totalNegSVDPred);
+	        System.out.println("Total SVD pred >0 = " + svdRec.totalPosSVDPred);
+        }
+     }
+
+}

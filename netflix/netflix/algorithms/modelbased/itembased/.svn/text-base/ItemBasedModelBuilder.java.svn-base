@@ -1,0 +1,341 @@
+package netflix.algorithms.modelbased.itembased;
+
+import java.util.Comparator;
+import java.util.TreeSet;
+
+import cern.colt.list.IntArrayList;
+
+import netflix.algorithms.modelbased.itembased.method.DemoVectorSim;
+import netflix.algorithms.modelbased.itembased.method.SimilarityMethod;
+import netflix.algorithms.modelbased.reader.DataReader;
+import netflix.algorithms.modelbased.writer.SimilarityWriter;
+import netflix.algorithms.modelbased.writer.UserSimKeeper;
+import netflix.utilities.IntDoublePair;
+import netflix.utilities.Timer227;
+
+/**
+ * General class for writing an item-based model builder.
+ * @author Amrit Tuladhar
+ *
+ */
+
+// it has an important method buildModel, which is called from other classes
+// This is the actual standalone class.
+
+/******************************************************************************************************/
+public class ItemBasedModelBuilder 
+/******************************************************************************************************/
+{
+    DataReader 			dataReader;				// interface
+    SimilarityWriter 	similarityWriter;		// interface
+    SimilarityMethod 	similarityMethod;		// interface
+    int 				numSimilarItems;
+    String				fileName;
+    int					zeroSim; 
+    int 				nonZeroSim;
+    
+ /******************************************************************************************************/
+ 
+    public ItemBasedModelBuilder( DataReader dataReader,
+            					  SimilarityWriter similarityWriter,
+            					  SimilarityMethod similarityMethod) 
+    
+    {
+        this.dataReader			= dataReader;
+        this.similarityWriter 	= similarityWriter;
+        this.similarityMethod 	= similarityMethod;
+        this.numSimilarItems 	= 50;
+        zeroSim 				= 0;
+        nonZeroSim 				= 0;
+    }
+
+ /******************************************************************************************************/
+ 
+    public ItemBasedModelBuilder(DataReader dataReader,
+    							SimilarityWriter similarityWriter,
+    							SimilarityMethod similarityMethod,
+    							int numSimilarItems) 
+    {
+        this.dataReader 		= dataReader;
+        this.similarityWriter 	= similarityWriter;
+        this.similarityMethod 	= similarityMethod;
+    
+        this.numSimilarItems	= numSimilarItems;
+        zeroSim 				= 0;
+    }
+    
+  /******************************************************************************************************/  
+  
+    /**
+     * @author steinbel
+     * Sets the name of the file to which the UserSimKeeper should be serialized if
+     * we're working in memory
+     * @param name - the filename
+     */
+    
+    public void setFileName(String name)     
+    {
+    	this.fileName = name;
+    }
+    
+ /******************************************************************************************************/
+ 
+    //overloaded method added for backwards compatibility - steinbel
+    public boolean buildModel()     
+    {
+    	//return buildModel(false, false); 
+    	  return buildModel(true, false);		//now lets us write object into memory
+    }
+  
+  /******************************************************************************************************/
+    /**
+     * @author tuladara
+     * Modified by steinbel to work with users.
+     * @param inMemory - if the results should be written to a serializable object.
+     * @param users - if we're calculating on users instead of movies
+     * @return - true on completion
+     */
+    
+    //SELECT count(MovieId) FROM sml_movies s; -->1682
+    
+    public boolean buildModel(boolean inMemory, boolean users)    
+    {
+        int totalSim =0;        
+    	Timer227 tim = new Timer227();
+        
+    	   // Get list of users and movies
+        IntArrayList listOfMovies = dataReader.getListOfMovies();
+        if(users)
+        	listOfMovies = dataReader.getListOfUsers();
+        int numberOfMovies = listOfMovies.size();    
+        
+      /*  int numberOfMovies = dataReader.getNumberOfMovies();
+       
+        if (users)
+        	numberOfMovies = dataReader.getNumberOfUsers();*/
+        
+      //important, this comparator is writing sorted values (Descending)
+        TreeSet<IntDoublePair> similarMovies = new TreeSet<IntDoublePair>(new RatingComparator());
+    
+        int firstMovieId = 1;
+        int startMovieId = 1;
+
+      //------------------------------------------------------------------  
+      // build models
+      //------------------------------------------------------------------
+        
+        try         
+        {
+            for (int m=0; m<numberOfMovies; m++)            
+            {
+            	int M_mid = listOfMovies.getQuick(m);
+            	
+                similarMovies.clear(); //clear the model craeted for previous user/movie         
+                tim.start(); 
+
+                //System.out.print("Building model for " + m + "...");
+                
+                for (int n=0; n<numberOfMovies; n++) //build model for each movie in the database 
+                 {
+                	int N_mid = listOfMovies.getQuick(n);
+                	
+                    if (M_mid!=N_mid)                     
+                    {
+                    	double sim = 0.0;
+               
+                    	if (users)
+                    		sim = similarityMethod.findUserSimilarity(dataReader, M_mid, N_mid);
+                    	else  // find similarity between two movies
+                    		sim = similarityMethod.findSimilarity(dataReader, M_mid, N_mid, 0); 
+                        
+                    	if (sim==0) zeroSim++;                    	
+                    	similarMovies.add(new IntDoublePair(N_mid, sim));
+                    	totalSim ++;
+                    }
+                }
+         
+                
+                int count = 1;
+                for (IntDoublePair p : similarMovies)                
+                {
+                  //  if (count > numSimilarItems)
+                  //      break;
+                //	  System.out.println(p.b);       
+                    similarityWriter.write(M_mid, p.a, p.b); //active movie, similar movie, similarity
+                    count++;
+                }
+              //  System.out.println("_______________________________________________");
+                
+                tim.stop();
+                tim.resetTimer();
+                                
+            } //end of model building
+
+            System.out.println("done: " + tim.getMilliTime() + " ms," + " with zeroSim =" +zeroSim + ", Toal Sim ="+ totalSim);            
+            zeroSim=0;
+
+            //let us write in memory. Infact the similarityWriter is the file name 
+            //, so what it will write is the object of the file?
+            //________________________________
+
+            
+            dataReader.close();
+            
+            if (inMemory) //if we have to write in memory, do so by writing file (we build) into memory 
+            {
+            	UserSimKeeper.serialize(fileName, (UserSimKeeper) similarityWriter);
+            }
+            
+            similarityWriter.close();
+        
+        } 
+        
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+ /******************************************************************************************************/
+    /**
+     * @author Musi
+     * @param inMemory - if the results should be written to a serializable object.
+     * @param users - if we're calculating on users instead of movies
+     * @return - true on completion
+     */
+    
+       
+    public boolean buildDemoModel(boolean inMemory, boolean users, int choice)    
+    {
+        Timer227 tim = new Timer227();
+        
+        //important, this comparator is writing sorted values (Descending)
+        TreeSet<IntDoublePair> similarMovies = new TreeSet<IntDoublePair>(new RatingComparator());
+    
+        // Get list of users and movies
+        IntArrayList listOfMovies = dataReader.getListOfMovies();
+        if(users)
+        	listOfMovies = dataReader.getListOfUsers();
+        int numberOfMovies = listOfMovies.size();
+        
+        // It was wrong approach
+        /*
+        int numberOfMovies = dataReader.getNumberOfMovies();
+       
+        if (users)
+        	numberOfMovies = dataReader.getNumberOfUsers();
+       */
+               
+        System.out.println(" Total movies in this fold =" + numberOfMovies);
+        
+        int firstMovieId = 1;
+        int startMovieId = 1;
+    
+      //------------------------------------------  
+      // build models, go through all movies in 
+      // that fold  (MovieId are from 1 to 1182 Total)
+      //------------------------------------------
+        
+        try         
+        {
+            for (int m=0; m<numberOfMovies; m++)            
+            {
+            	//Get a movie
+            	int M_mid = listOfMovies.getQuick(m);
+            	
+                similarMovies.clear();								 //clear the model created for previous user/movie
+                tim.start(); 
+                
+              //  System.out.println("Building model for " + m + "...");
+           
+
+                for (int n=0; n<numberOfMovies; n++)    			 //build model for each movie in the database 
+                 {
+                	//Get a movie
+                	int N_mid = listOfMovies.getQuick(n);
+                	
+                    if (M_mid!=N_mid)                     
+                    {
+                    	double sim = 0.0;
+               
+                    	if (users)
+                    		sim = similarityMethod.findUserSimilarity(dataReader, M_mid, N_mid);
+                    	else  // find similarity between two movies
+                    		sim = similarityMethod.findSimilarity(dataReader, M_mid, N_mid, choice); 
+                        
+                    	if (sim==0) zeroSim++;
+                    	if (sim>0)  nonZeroSim++;
+                    	
+                    	similarMovies.add(new IntDoublePair(N_mid, sim));
+                    }
+                } // end of inner for
+                                
+                
+                //---------------------------------------------------  
+                // We done finding sim for one movie, write them
+                //---------------------------------------------------
+                
+                int count = 1;
+                for (IntDoublePair p : similarMovies)                
+                {
+                  //  if (count > numSimilarItems)
+                  //      break;
+                  //	  System.out.println(p.b); 
+                	
+                	if ( p.b !=0) //There is no need to write sim for items-items, which is zero?
+                	{
+	                    similarityWriter.write(M_mid, p.a, p.b); //active movie, similar movie, similarity
+	                    count++;
+                	}
+                }
+                             
+                tim.stop();
+                tim.resetTimer();
+                                
+            } //end of model building
+
+            System.out.println("done: " + tim.getMilliTime() + " ms," + " with zeroSim =" +zeroSim + ", >0 sim =" + nonZeroSim);            
+            zeroSim=0;
+
+            //let us write in memory. Infact the similarityWriter is the file name 
+            //, so what it will write is the object of the file?
+            
+            //------------------------------------------  
+            // Write file into memory 
+            // 
+            //------------------------------------------
+            
+            dataReader.close();
+            
+            if (inMemory) //if we have to write in memory, do so by writing file (we build) into memory 
+            {
+            	UserSimKeeper.serialize(fileName, (UserSimKeeper) similarityWriter);
+            }
+            
+            similarityWriter.close();
+        
+        } 
+        
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+/******************************************************************************************************/
+    
+    protected class RatingComparator implements Comparator<IntDoublePair>    
+    {
+        public int compare(IntDoublePair p1, IntDoublePair p2)         
+        {
+            // Reverse order stored
+            if (p1.b <= p2.b)             
+            {
+                return 1;
+            }
+            
+            return -1;
+        }        
+    }
+    
+}

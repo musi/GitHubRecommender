@@ -1,0 +1,7 @@
+#!/bin/sh
+#PBS -l walltime=60:00:00,mem=32gb
+# Change to directory from which job was submitted.
+# (The actual name is held in the PBS environment variable $PBS_O_WORKDIR)
+cd $PBS_O_WORKDIR
+module load jdk
+java -Xmx32g -XX:-UsePerfData -classpath /home/mag5v07/workspace/MusiRecommender/netflix/algorithms/modelbased/svd/colt.jar:/home/mag5v07/Libraries/weka.jar:/home/mag5v07/Libraries/LibSVM/libsvm-2.91/java/libsvm.jar:/home/mag5v07/Libraries/weka-src.jar:/home/mag5v07/workspace/MusiRecommender/ netflix.algorithms.memorybased.Clustering.SimpleKMeanAnytimeRecNF outputNF.txt

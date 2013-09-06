@@ -1,0 +1,3 @@
+#!/bin/sh
+module load jdk
+java -Xmx8192m -classpath /home/mag5v07/workspace/MusiRecommender/netflix/algorithms/modelbased/svd/colt.jar:/home/mag5v07/workspace/MusiRecommender/ netflix.algorithms.modelbased.svd.Hi
